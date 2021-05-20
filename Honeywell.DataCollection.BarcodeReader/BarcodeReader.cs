@@ -451,5 +451,118 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 Logger.Info("BarcodeReader", "Exception occurs in closing reader session, " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Loads the default profile.
+        ///
+        /// Reader must be open.
+        /// </summary>
+        /// <returns>
+        /// Returns SUCCESS if load was successful.
+        /// Returns INVALID_PARAMETER if profile was not found.
+        /// </returns>
+        public async Task<Result> LoadDefaultProfileAsync()
+        {
+            return await LoadProfileAsync(null);
+        }
+
+        /// <summary>
+        /// Loads profile and properties as per setup in Honeywell scanner settings on the device settings.
+        ///
+        /// Reader must be open.
+        /// </summary>
+        /// <param name="profileName">application specific profile name usually Application.Context.PackageName</param>
+        /// <returns>
+        /// Returns SUCCESS if load was successful.
+        /// Returns INVALID_PARAMETER if profile was not found.
+        /// </returns>
+        public async Task<Result> LoadProfileAsync(string profileName)
+        {
+            if (mReaderOpened)
+            {
+                return await Task.Run(() =>
+                {
+                    try
+                    {
+                        if (mAidcBarcodeReader.LoadProfile(profileName))
+                        {
+                            return new Result(Result.Codes.SUCCESS, "Profile loaded.");
+                        }
+                        else
+                        {
+                            return new Result(Result.Codes.INVALID_PARAMETER, "Profile not found.");
+                        }
+                    }
+                    catch (Java.Lang.Exception ex)
+                    {
+                        return new Result(Result.Codes.EXCEPTION, ex.Message);
+                    }
+                });
+            }
+            else
+            {
+                return new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of properties.
+        ///
+        /// Will return empty Dictionary if barcode reader is not open
+        /// </summary>
+        /// <returns>Dictionary of barcode reader properties</returns>
+        public Dictionary<string, object> GetProperties()
+        {
+            var result = new Dictionary<string, object>();
+
+            if (mReaderOpened)
+            {
+                foreach (var pair in mAidcBarcodeReader.AllProperties)
+                {
+                    result.Add(pair.Key, ObjectTypeHelper.ConvertJavaObjectToSettingValue(pair.Value));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets a list of default properties.
+        ///
+        /// Will return empty Dictionary if barcode reader is not open.
+        /// </summary>
+        /// <returns>Dictionary of barcode reader properties</returns>
+        public Dictionary<string, object> GetDefaultProperties()
+        {
+            var result = new Dictionary<string, object>();
+
+            if (mReaderOpened)
+            {
+                foreach (var pair in mAidcBarcodeReader.AllDefaultProperties)
+                {
+                    result.Add(pair.Key, ObjectTypeHelper.ConvertJavaObjectToSettingValue(pair.Value));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get a list of profile names setup in the device sanning settings.
+        ///
+        /// Will return empty list if barcode reader is not open.
+        /// </summary>
+        /// <returns>List of barcode reader profiles</returns>
+        public IList<string> GetProfileNames()
+        {
+            if (mReaderOpened)
+            {
+                return mAidcBarcodeReader.ProfileNames;
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
     }
 }

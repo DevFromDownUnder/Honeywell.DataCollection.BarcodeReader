@@ -20,17 +20,45 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             try
             {
                 //Haven't checked I guess types are only bool, int and string?
-                if (value is bool)
+                if (value is bool boolValue)
                 {
-                    return new Java.Lang.Boolean(Convert.ToBoolean(value));
+                    return new Java.Lang.Boolean(boolValue);
                 }
-                else if (value is int)
+                else if (value is int intValue)
                 {
-                    return new Java.Lang.Integer(Convert.ToInt32(value));
+                    return new Java.Lang.Integer(intValue);
                 }
-                else if (value is string)
+                else if (value is string stringValue)
                 {
-                    return new Java.Lang.String(Convert.ToString(value));
+                    return new Java.Lang.String(stringValue);
+                }
+            }
+            catch { }
+
+            throw new ArgumentException("Unsupported setting value type: " + value.GetType().FullName);
+        }
+
+        public static object ConvertJavaObjectToSettingValue(Java.Lang.Object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                //Haven't checked I guess types are only bool, int and string?
+                if (value is Java.Lang.Boolean javaBoolean)
+                {
+                    return Convert.ToBoolean(javaBoolean);
+                }
+                else if (value is Java.Lang.Integer javaInteger)
+                {
+                    return Convert.ToInt32(javaInteger);
+                }
+                else if (value is Java.Lang.String javaString)
+                {
+                    return Convert.ToString(javaString);
                 }
             }
             catch { }
