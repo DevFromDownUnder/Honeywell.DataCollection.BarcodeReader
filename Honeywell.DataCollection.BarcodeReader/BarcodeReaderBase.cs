@@ -11,12 +11,12 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     public abstract class BarcodeReaderBase : IDisposable, IBarcodeReader
     {
         /// <summary>
-        /// An instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys" /> which a subclass may override.
+        /// An instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" /> which a subclass may override.
         /// </summary>
         protected BarcodeReaderSettingKeys mSettingKeys = new BarcodeReaderSettingKeys();
 
         /// <summary>
-        /// An instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues" /> which a subclass may override.
+        /// An instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" /> which a subclass may override.
         /// </summary>
         protected BarcodeReaderSettingValues mSettingValues = new BarcodeReaderSettingValues();
 
@@ -34,10 +34,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         public abstract bool IsReaderOpened { get; }
 
         /// <summary>
-        /// Gets the associated <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys" /> object that
+        /// Gets the associated <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" /> object that
         /// can be used to get the setting key for a specific setting.
         /// </summary>
-        /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
+        /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
         public virtual BarcodeReaderSettingKeys SettingKeys
         {
             get
@@ -47,10 +47,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         }
 
         /// <summary>
-        /// Gets the associated <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues" /> object that
+        /// Gets the associated <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" /> object that
         /// can be used to get predefined setting values for certain settings.
         /// </summary>
-        /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
+        /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
         public virtual BarcodeReaderSettingValues SettingValues
         {
             get
@@ -61,7 +61,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
         /// <summary>
         /// Returns a boolean value to indicate whether there is a subscriber
-        /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event.
+        /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event.
         /// </summary>
         internal bool HasBarcodeDataReadySubscriber
         {
@@ -73,7 +73,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
         /// <summary>
         /// Returns a boolean value to indicate whether there is a subscriber
-        /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.ConnectionStateChanged" /> event.
+        /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.ConnectionStateChanged" /> event.
         /// </summary>
         internal bool HasBarcodeDeviceSubscriber
         {
@@ -124,18 +124,18 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <summary>
         /// Opens the barcode reader specified in the constructor.
         /// </summary>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public abstract Task<BarcodeReaderBase.Result> OpenAsync();
 
         /// <summary>Closes the barcode reader.</summary>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public abstract Task<BarcodeReaderBase.Result> CloseAsync();
 
         /// <summary>Sets a collection of decoder or symbology settings.</summary>
         /// <param name="settings">A Dictionary object containing setting key-value pairs.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public abstract Task<BarcodeReaderBase.Result> SetAsync(Dictionary<string, object> settings);
 
@@ -146,14 +146,14 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         /// <param name="on">A Boolean value to indicate whether to start or
         /// stop the software trigger.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public abstract Task<BarcodeReaderBase.Result> SoftwareTriggerAsync(bool on);
 
         /// <summary>Enables or disables the barcode reader.</summary>
         /// <param name="enabled">A Boolean value to indicate whether to enable or
         /// disable the barcode reader.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public abstract Task<BarcodeReaderBase.Result> EnableAsync(bool enabled);
 
@@ -161,7 +161,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         protected abstract void DisposeReader();
 
         /// <summary>
-        /// Fires the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event.
+        /// Fires the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event.
         /// </summary>
         /// <param name="e"></param>
         internal virtual void OnBarcodeDataRead(BarcodeDataArgs e)
@@ -174,7 +174,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         }
 
         /// <summary>
-        /// Fires the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.ConnectionStateChanged" /> event.
+        /// Fires the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.ConnectionStateChanged" /> event.
         /// </summary>
         /// <param name="e"></param>
         internal virtual void OnConnectedStateChanged(ConnectionStateArgs e)
@@ -283,7 +283,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
             /// <summary>
             /// Defines the common status codes returned in the
-            /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object.
+            /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object.
             /// </summary>
             public class Codes
             {

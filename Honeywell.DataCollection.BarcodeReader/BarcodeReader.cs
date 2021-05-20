@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
     /// The BarcodeReader class represents a barcode reader device. It provides
@@ -77,7 +77,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// <summary>
         /// Creates a BarcodeReader object for accessing the specified scanner.
         /// For the scannerName parameter, use one of the scanner names returned
-        /// from the <see cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader.GetConnectedBarcodeReaders(System.Object)" /> method
+        /// from the <see cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.GetConnectedBarcodeReaders(System.Object)" /> method
         /// or null for the internal scanner.
         /// </summary>
         /// <param name="scannerName">A string to identify the scanner that this
@@ -134,7 +134,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// }
         /// </code>
         /// </example>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public override async Task<BarcodeReaderBase.Result> OpenAsync()
         {
@@ -200,7 +200,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         }
 
         /// <summary>Closes the barcode reader.</summary>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public override async Task<BarcodeReaderBase.Result> CloseAsync()
         {
@@ -234,17 +234,17 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// <summary>
         /// Sets a collection of decoder or symbology settings. The settings parameter
         /// contains a collection of key-value pairs where the key identifies the setting.
-        /// <para>You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingKeys" /> to get the
+        /// <para>You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingKeys" /> to get the
         /// predefined setting keys. The setting value type may be any built-in C# types
-        /// such as bool, int, string, etc. You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" />
+        /// such as bool, int, string, etc. You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" />
         /// to get the predefined values for certain settings. Please reference the API
-        /// documentation of the <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys" /> class for the
+        /// documentation of the <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" /> class for the
         /// expected setting value types.</para>
         /// <para>Note: This method may not return error result if the setting is not
         /// supported by the decoder or the setting value is not accepted by the decoder.</para>
         /// </summary>
         /// <param name="settings">A Dictionary object containing setting key-value pairs.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         /// <example>
         /// <code>
@@ -262,8 +262,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// }
         /// </code>
         /// </example>
-        /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys" />
-        /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues" />
+        /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" />
+        /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" />
         public override async Task<BarcodeReaderBase.Result> SetAsync(Dictionary<string, object> settings)
         {
             BarcodeReader barcodeReader = this;
@@ -306,7 +306,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// </summary>
         /// <param name="on">A Boolean value to indicate whether to start or
         /// stop the software trigger.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public override Task<BarcodeReaderBase.Result> SoftwareTriggerAsync(bool on)
         {
@@ -340,7 +340,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// <summary>Enables or disables the barcode reader.</summary>
         /// <param name="enabled">A Boolean value to indicate whether to enable or
         /// disable the barcode reader.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         public override Task<BarcodeReaderBase.Result> EnableAsync(bool enabled)
         {
@@ -382,7 +382,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
         /// the parameter value is null. If the parameter is not null, then it
         /// needs to be a type of Android.Content.Context. It can
         /// be either an activity or application context.</param>
-        /// <returns>A list of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderInfo" /> objects representing
+        /// <returns>A list of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderInfo" /> objects representing
         /// barcode readers that are currently connected.</returns>
         public static async Task<IList<BarcodeReaderInfo>> GetConnectedBarcodeReaders(object context = null)
         {

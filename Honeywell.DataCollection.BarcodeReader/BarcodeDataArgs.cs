@@ -3,7 +3,7 @@
 namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
-    /// Provides data for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event.
+    /// Provides data for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event.
     /// </summary>
     public class BarcodeDataArgs : EventArgs
     {

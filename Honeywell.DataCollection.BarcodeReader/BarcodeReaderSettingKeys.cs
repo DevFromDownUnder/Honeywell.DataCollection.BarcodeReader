@@ -2,12 +2,12 @@
 {
     /// <summary>
     /// This class provides properties for identifying barcode related settings.
-    /// Application should create an instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> object
-    /// and use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingKeys" /> property of the
-    /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference the setting key properties
+    /// Application should create an instance of <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> object
+    /// and use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingKeys" /> property of the
+    /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference the setting key properties
     /// defined in this class.
     /// </summary>
-    /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues" />
+    /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" />
     public class BarcodeReaderSettingKeys
     {
         /// <summary>
@@ -63,12 +63,12 @@
         /// <summary>
         /// Setting key to set the check digit mode for Codabar barcodes.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.CodabarCheckDigitMode_Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.CodabarCheckDigitMode_CheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.CodabarCheckDigitMode_NoCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.CodabarCheckDigitMode_Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.CodabarCheckDigitMode_CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.CodabarCheckDigitMode_NoCheck" /></item>
         /// </list>
         /// </summary>
         public virtual string CodabarCheckDigitMode { get; internal set; } = "DEC_CODABAR_CHECK_DIGIT_MODE";
@@ -148,13 +148,13 @@
         /// <summary>
         /// Setting key to set the check digit mode for Code 11 barcodes.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code11CheckDigitMode_DoubleDigitCheck" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code11CheckDigitMode_DoubleDigitCheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code11CheckDigitMode_SingleDigitCheck" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code11CheckDigitMode_SingleDigitCheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code11CheckDigitMode_DoubleDigitCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code11CheckDigitMode_DoubleDigitCheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code11CheckDigitMode_SingleDigitCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code11CheckDigitMode_SingleDigitCheckAndStrip" /></item>
         /// </list>
         /// </summary>
         public virtual string Code11CheckDigitMode { get; internal set; } = "DEC_CODE11_CHECK_DIGIT_MODE";
@@ -202,12 +202,12 @@
         /// Setting key to specify whether substandard length margins (i.e. quiet zones)
         /// should be allowed for Code 128 symbols during the execution of decode.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code128ShortMargin_Disabled" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code128ShortMargin_EnableBothEnds" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code128ShortMargin_Enabled" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code128ShortMargin_Disabled" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code128ShortMargin_EnableBothEnds" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code128ShortMargin_Enabled" /></item>
         /// </list>
         /// </summary>
         public virtual string Code128ShortMargin { get; internal set; } = "DEC_C128_SHORT_MARGIN";
@@ -221,12 +221,12 @@
         /// <summary>
         /// Setting key to set the check digit mode for Code 39 barcodes.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code39CheckDigitMode_Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code39CheckDigitMode_CheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Code39CheckDigitMode_NoCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code39CheckDigitMode_Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code39CheckDigitMode_CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Code39CheckDigitMode_NoCheck" /></item>
         /// </list>
         /// </summary>
         public virtual string Code39CheckDigitMode { get; internal set; } = "DEC_CODE39_CHECK_DIGIT_MODE";
@@ -351,9 +351,9 @@
 
         /// <summary>
         /// Setting key to specify the plug-in to modify the barcode data before
-        /// it is delivered in <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event.
+        /// it is delivered in <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event.
         /// Normally the application can manipulate the barcode data in the
-        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event handler. You may
+        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event handler. You may
         /// use this setting if your application provides generic scanning feature
         /// and allows a customer to provide a data editing plug-in to edit the
         /// data according to their requirements.
@@ -365,7 +365,7 @@
         /// <summary>
         /// Setting key to specify whether scanning barcodes containing URLs will
         /// open the web browser. Barcodes containing URLs will not cause a
-        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event if this setting
+        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event if this setting
         /// is true. This setting is true by default on Honeywell Android computers.
         /// <para>The value for this setting should be boolean.</para>
         /// </summary>
@@ -375,7 +375,7 @@
         /// Setting key to specify whether scanning barcodes generated by EZ Config
         /// for Mobility will launch EZ Config on the mobile computer to apply settings.
         /// Aztec barcodes with "ecfg" near the beginning will not cause a
-        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event if this setting is
+        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event if this setting is
         /// true. This setting is true by default on Honeywell Android computers.
         /// <para>The value for this setting should be boolean.</para>
         /// </summary>
@@ -397,7 +397,7 @@
         /// will be included as an extra. The extra key for the data is
         /// "com.honeywell.scantointent.intent.extra.DATA".
         /// <para>Barcodes starting with "//" will not cause a
-        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event if this setting is
+        /// <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event if this setting is
         /// true. This setting is true by default on Honeywell Android computers.</para>
         /// <para>The value for this setting should be boolean.</para>
         /// </summary>
@@ -413,14 +413,14 @@
         /// <summary>
         /// Setting key to specify the data added to the beginning of the barcode
         /// data to indicate the symbology. This is added before the data, but
-        /// after the prefix specified in <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys.DataProcessorPrefix" />.
+        /// after the prefix specified in <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys.DataProcessorPrefix" />.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_AIM" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_Honeywell" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_None" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_AIM" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_Honeywell" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.DataProcessorSymbologyPrefix_None" /></item>
         /// </list>
         /// </summary>
         public virtual string DataProcessorSymbologyPrefix { get; internal set; } = "DPR_SYMBOLOGY_PREFIX";
@@ -560,14 +560,14 @@
         /// <summary>
         /// Setting key to set EANUCC emulation mode.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1128Emulation" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1CodeExpansionOff" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1DatabarEmulation" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1Ean8toEan13Conversion" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1EmulationOff" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1128Emulation" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1CodeExpansionOff" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1DatabarEmulation" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1Ean8toEan13Conversion" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.EanUccEmulationMode_Gs1EmulationOff" /></item>
         /// </list>
         /// </summary>
         public virtual string EanUccEmulationMode { get; internal set; } = "DEC_EANUCC_EMULATION_MODE";
@@ -656,12 +656,12 @@
         /// <summary>
         /// Setting key to set the check digit mode for Interleaved 2 of 5 barcodes.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_CheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_NoCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Interleaved25CheckDigitMode_NoCheck" /></item>
         /// </list>
         /// </summary>
         public virtual string Interleaved25CheckDigitMode { get; internal set; } = "DEC_I25_CHECK_DIGIT_MODE";
@@ -782,16 +782,16 @@
         /// <summary>
         /// Setting key to set the check digit mode for MSI barcodes.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_DoubleMod10Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_DoubleMod10CheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_NoCheck" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod10Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod10CheckAndStrip" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod11PlusMod10Check" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod11PlusMod10CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_DoubleMod10Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_DoubleMod10CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_NoCheck" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod10Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod10CheckAndStrip" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod11PlusMod10Check" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.MsiCheckDigitMode_SingleMod11PlusMod10CheckAndStrip" /></item>
         /// </list>
         /// </summary>
         public virtual string MsiCheckDigitMode { get; internal set; } = "DEC_MSI_CHECK_DIGIT_MODE";
@@ -875,40 +875,40 @@
         /// Setting key to enable one or more 2D postal symbologies. Enabling one
         /// grouping option means disabling the previously selected grouping.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Australia" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Bpo" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Canada" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Dutch" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_InfoMail" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_InfoMailAndBpo" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Japan" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_None" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Planet" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnet" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpu" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuAndUspsPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuPlusBnB" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUspsPlusBnB" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUpu" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUpuAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Postnet" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpu" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuAndUspsPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUspsPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_PostnetPlusBnb" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Upu" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_UpuAndUsps" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.Postal2DMode_Usps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Australia" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Bpo" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Canada" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Dutch" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_InfoMail" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_InfoMailAndBpo" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Japan" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_None" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Planet" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnet" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpu" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuAndUspsPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUpuPlusBnB" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetAndUspsPlusBnB" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndPostnetPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUpu" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUpuAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PlanetAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Postnet" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpu" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuAndUspsPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUpuPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetAndUspsPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_PostnetPlusBnb" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Upu" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_UpuAndUsps" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.Postal2DMode_Usps" /></item>
         /// </list>
         /// </summary>
         public virtual string Postal2DMode { get; internal set; } = "DEC_POSTAL_ENABLED";
@@ -1040,13 +1040,13 @@
         /// <summary>
         /// Setting key to set the trigger scan mode.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_Continuous" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_OneShot" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_ReadOnRelease" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_ReadOnSecondTriggerPress" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_Continuous" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_OneShot" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_ReadOnRelease" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_ReadOnSecondTriggerPress" /></item>
         /// </list>
         /// </summary>
         public virtual string TriggerScanMode { get; internal set; } = "TRIG_SCAN_MODE";
@@ -1055,18 +1055,18 @@
         /// Setting key to set the time period before the scanner can reread the same
         /// barcode in continuous trigger scan mode.
         /// <para>The value for this setting should be an integer (in milliseconds).</para>
-        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys.TriggerScanMode" />
-        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_Continuous" />
+        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys.TriggerScanMode" />
+        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_Continuous" />
         /// </summary>
         public virtual string TriggerScanSameSymbolTimeout { get; internal set; } = "TRIG_SCAN_SAME_SYMBOL_TIMEOUT";
 
         /// <summary>
         /// Setting key to enable or disable same symbol timeout. If the setting
-        /// value is true, you may specify the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys.TriggerScanSameSymbolTimeout" /> to
+        /// value is true, you may specify the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys.TriggerScanSameSymbolTimeout" /> to
         /// allow the scanner to reread the same barcode in continuous trigger scan mode.
         /// <para>The value for this setting should be boolean.</para>
-        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingKeys.TriggerScanMode" />
-        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.TriggerScanMode_Continuous" />
+        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys.TriggerScanMode" />
+        /// <seealso cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.TriggerScanMode_Continuous" />
         /// </summary>
         public virtual string TriggerScanSameSymbolTimeoutEnabled { get; internal set; } = "TRIG_SCAN_SAME_SYMBOL_TIMEOUT_ENABLED";
 
@@ -1213,12 +1213,12 @@
         /// Setting key to specify whether normal or inverse decoding for linear symbologies
         /// is enabled during the execution of decode. By default normal video is enabled.
         /// <para>The value for this setting should be one of the values below.
-        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.SettingValues" /> property of the
-        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader" /> instance to reference these predefined values.</para>
+        /// Use the <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" /> property of the
+        /// <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader" /> instance to reference these predefined values.</para>
         /// <list type="bullet">
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.VideoReverseEnabled_Inverse" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.VideoReverseEnabled_Normal" /></item>
-        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderSettingValues.VideoReverseEnabled_NormalAndInverse" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.VideoReverseEnabled_Inverse" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.VideoReverseEnabled_Normal" /></item>
+        /// <item><see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues.VideoReverseEnabled_NormalAndInverse" /></item>
         /// </list>
         /// </summary>
         public virtual string VideoReverseEnabled { get; internal set; } = "DEC_VIDEO_REVERSE_ENABLED";

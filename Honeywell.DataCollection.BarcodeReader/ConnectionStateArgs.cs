@@ -3,7 +3,7 @@
 namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
-    /// Provides status for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.ConnectionStateChanged" /> event.
+    /// Provides status for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.ConnectionStateChanged" /> event.
     /// </summary>
     public class ConnectionStateArgs : EventArgs
     {
