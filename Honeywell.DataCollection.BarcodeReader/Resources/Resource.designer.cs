@@ -1904,70 +1904,76 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 			public static int abc_vector_test = 2131099733;
 			
 			// aapt resource value: 0x7F060056
-			public static int btn_checkbox_checked_mtrl = 2131099734;
+			public static int barcode_example_icon = 2131099734;
 			
 			// aapt resource value: 0x7F060057
-			public static int btn_checkbox_checked_to_unchecked_mtrl_animation = 2131099735;
+			public static int btn_checkbox_checked_mtrl = 2131099735;
 			
 			// aapt resource value: 0x7F060058
-			public static int btn_checkbox_unchecked_mtrl = 2131099736;
+			public static int btn_checkbox_checked_to_unchecked_mtrl_animation = 2131099736;
 			
 			// aapt resource value: 0x7F060059
-			public static int btn_checkbox_unchecked_to_checked_mtrl_animation = 2131099737;
+			public static int btn_checkbox_unchecked_mtrl = 2131099737;
 			
 			// aapt resource value: 0x7F06005A
-			public static int btn_radio_off_mtrl = 2131099738;
+			public static int btn_checkbox_unchecked_to_checked_mtrl_animation = 2131099738;
 			
 			// aapt resource value: 0x7F06005B
-			public static int btn_radio_off_to_on_mtrl_animation = 2131099739;
+			public static int btn_radio_off_mtrl = 2131099739;
 			
 			// aapt resource value: 0x7F06005C
-			public static int btn_radio_on_mtrl = 2131099740;
+			public static int btn_radio_off_to_on_mtrl_animation = 2131099740;
 			
 			// aapt resource value: 0x7F06005D
-			public static int btn_radio_on_to_off_mtrl_animation = 2131099741;
+			public static int btn_radio_on_mtrl = 2131099741;
 			
 			// aapt resource value: 0x7F06005E
-			public static int notification_action_background = 2131099742;
+			public static int btn_radio_on_to_off_mtrl_animation = 2131099742;
 			
 			// aapt resource value: 0x7F06005F
-			public static int notification_bg = 2131099743;
+			public static int ic_launcher = 2131099743;
 			
 			// aapt resource value: 0x7F060060
-			public static int notification_bg_low = 2131099744;
+			public static int notification_action_background = 2131099744;
 			
 			// aapt resource value: 0x7F060061
-			public static int notification_bg_low_normal = 2131099745;
+			public static int notification_bg = 2131099745;
 			
 			// aapt resource value: 0x7F060062
-			public static int notification_bg_low_pressed = 2131099746;
+			public static int notification_bg_low = 2131099746;
 			
 			// aapt resource value: 0x7F060063
-			public static int notification_bg_normal = 2131099747;
+			public static int notification_bg_low_normal = 2131099747;
 			
 			// aapt resource value: 0x7F060064
-			public static int notification_bg_normal_pressed = 2131099748;
+			public static int notification_bg_low_pressed = 2131099748;
 			
 			// aapt resource value: 0x7F060065
-			public static int notification_icon_background = 2131099749;
+			public static int notification_bg_normal = 2131099749;
 			
 			// aapt resource value: 0x7F060066
-			public static int notification_template_icon_bg = 2131099750;
+			public static int notification_bg_normal_pressed = 2131099750;
 			
 			// aapt resource value: 0x7F060067
-			public static int notification_template_icon_low_bg = 2131099751;
+			public static int notification_icon_background = 2131099751;
 			
 			// aapt resource value: 0x7F060068
-			public static int notification_tile_bg = 2131099752;
+			public static int notification_template_icon_bg = 2131099752;
 			
 			// aapt resource value: 0x7F060069
-			public static int notify_panel_notification_icon_bg = 2131099753;
+			public static int notification_template_icon_low_bg = 2131099753;
 			
 			// aapt resource value: 0x7F06006A
-			public static int tooltip_frame_dark = 2131099754;
+			public static int notification_tile_bg = 2131099754;
 			
 			// aapt resource value: 0x7F06006B
-			public static int tooltip_frame_light = 2131099755;
+			public static int notify_panel_notification_icon_bg = 2131099755;
+			
+			// aapt resource value: 0x7F06006C
+			public static int tooltip_frame_dark = 2131099756;
+			
+			// aapt resource value: 0x7F06006D
+			public static int tooltip_frame_light = 2131099757;
 			
 			static Drawable()
 			{
