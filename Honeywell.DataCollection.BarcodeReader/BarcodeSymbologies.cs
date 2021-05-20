@@ -492,20 +492,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>A string name of the specified symbology type.</returns>
         public static string GetName(uint symbType)
         {
-            foreach (SymbologyMap symbologyMapping in BarcodeSymbologies.sSymbologyMappingList)
+            foreach (SymbologyMap symbologyMapping in sSymbologyMappingList)
             {
                 if ((int)symbologyMapping.id == (int)symbType)
+                {
                     return symbologyMapping.name;
+                }
             }
+
             return string.Empty;
         }
 
         internal static SymbologyMap GetSymbologyMap(string honeywellId, string aimId)
         {
-            SymbologyMap symbologyMap = new SymbologyMap(string.Empty, 0U, string.Empty, string.Empty);
+            var symbologyMap = new SymbologyMap(string.Empty, 0U, string.Empty, string.Empty);
             if (honeywellId.Length > 0)
             {
-                foreach (SymbologyMap symbologyMapping in BarcodeSymbologies.sSymbologyMappingList)
+                foreach (var symbologyMapping in sSymbologyMappingList)
                 {
                     if (symbologyMapping.honeywellId == honeywellId)
                     {
@@ -525,6 +528,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     }
                 }
             }
+
             return symbologyMap;
         }
     }

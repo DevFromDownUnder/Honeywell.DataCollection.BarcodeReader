@@ -15,9 +15,9 @@
     <description>Extends the Honeywell Xamarin Scanning SDK v1.35.00.0017 with extra functionality.</description>
     <copyright></copyright>
     <tags>Honeywell.DataCollection.BarcodeReader Scanner SDK</tags>
-	<dependencies>
-		<dependency id="DevFromDownUnder.Honeywell.DataCollection" version="1.1.1" />
-	</dependencies>
+    <dependencies>
+        <dependency id="DevFromDownUnder.Honeywell.DataCollection" version="1.1.1" />
+    </dependencies>
   </metadata>
   <files>
     <file src="nuget\DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll" target="lib\monoandroid" />

@@ -40,13 +40,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <summary>
         /// Gets a boolean value indicating whether the barcode reader is opened.
         /// </summary>
-        public override bool IsReaderOpened
-        {
-            get
-            {
-                return this.mReaderOpened;
-            }
-        }
+        public override bool IsReaderOpened => mReaderOpened;
 
         /// <summary>
         /// Creates a BarcodeReader object for accessing the internal scanner.
@@ -63,15 +57,19 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// BarcodeReader mBarcodeReader = new BarcodeReader();
         /// </code>
         /// </example>
-        public BarcodeReader(object context = null)
-          : base(context)
+        public BarcodeReader(object context = null) : base(context)
         {
             if (context == null)
-                this.mContext = (object)Application.Context;
+            {
+                mContext = Application.Context;
+            }
             else if (!(context is Context))
+            {
                 throw new ArgumentException("Invalid context type, must be Android.Content.Context.", "context");
-            this.mScannerName = "dcs.scanner.imager";
-            this.SetBarcodeDeviceListener(this.mContext);
+            }
+
+            mScannerName = "dcs.scanner.imager";
+            SetBarcodeDeviceListener(mContext);
         }
 
         /// <summary>
@@ -88,16 +86,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// needs to be a type of Android.Content.Context. It can
         /// be either an activity or application context.</param>
         /// <exception cref="T:System.ArgumentException">Invalid context parameter.</exception>
-        public BarcodeReader(string scannerName, object context = null)
-          : base(scannerName, context)
+        public BarcodeReader(string scannerName, object context = null) : base(scannerName, context)
         {
             if (context == null)
-                this.mContext = (object)Application.Context;
+            {
+                mContext = Application.Context;
+            }
             else if (!(context is Context))
+            {
                 throw new ArgumentException("Invalid context type, must be Android.Content.Context.", "context");
+            }
+
             if (scannerName == null)
-                this.mScannerName = "dcs.scanner.imager";
-            this.SetBarcodeDeviceListener(this.mContext);
+            {
+                mScannerName = "dcs.scanner.imager";
+            }
+
+            SetBarcodeDeviceListener(mContext);
         }
 
         /// <summary>
@@ -108,15 +113,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         private void SetBarcodeDeviceListener(object context)
         {
             if (sBarcodeDeviceEventHandler != null)
+            {
                 return;
-            Task.Run((Action)(() =>
+            }
+
+            Task.Run(() =>
            {
-               BarcodeReaderManager barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
-               if (this.mAidcManager == null)
-                   this.mAidcManager = barcodeReaderManager.Init();
+               using (var barcodeReaderManager = BarcodeReaderManager.Create((Context)context))
+               {
+                   if (mAidcManager == null)
+                   {
+                       mAidcManager = barcodeReaderManager.Init();
+                   }
+               }
+
                sBarcodeDeviceEventHandler = new BarcodeDeviceEventHandler(this);
-               this.mAidcManager.AddBarcodeDeviceListener((Com.Honeywell.Aidc.AidcManager.IBarcodeDeviceListener)sBarcodeDeviceEventHandler);
-           }));
+               mAidcManager.AddBarcodeDeviceListener(sBarcodeDeviceEventHandler);
+           });
         }
 
         /// <summary>
@@ -134,109 +147,120 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// }
         /// </code>
         /// </example>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public override async Task<BarcodeReaderBase.Result> OpenAsync()
+        public override async Task<Result> OpenAsync()
         {
-            BarcodeReader barcodeReader = this;
             Logger.Debug("BarcodeReader", "OpenAsync entry");
-            BarcodeReaderBase.Result result = await Task.Run<BarcodeReaderBase.Result>(() => OpenReader(mScannerName, (Context)mContext));
+
+            var result = await Task.Run(() => OpenReader(mScannerName, (Context)mContext));
+
             Logger.Info("BarcodeReader", "OpenAsync returns Code:" + (object)result.Code + " Message:" + result.Message);
+
             return result;
         }
 
-        private BarcodeReaderBase.Result OpenReader(string scannerName, Context context)
+        private Result OpenReader(string scannerName, Context context)
         {
-            BarcodeReaderBase.Result result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Reader successfully claimed.");
-            if (!this.mReaderOpened)
+            var result = new Result(Result.Codes.SUCCESS, "Reader successfully claimed.");
+            if (!mReaderOpened)
             {
                 try
                 {
-                    if (this.mAidcBarcodeReader == null)
+                    if (mAidcBarcodeReader == null)
                     {
-                        this.mAidcManager = BarcodeReaderManager.Create(context).Init();
-                        this.mAidcBarcodeReader = this.mAidcManager.CreateBarcodeReader(scannerName);
+                        mAidcManager = BarcodeReaderManager.Create(context).Init();
+                        mAidcBarcodeReader = mAidcManager.CreateBarcodeReader(scannerName);
                         try
                         {
-                            this.mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
+                            mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
                         }
                         catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
                         {
-                            result.Code = BarcodeReaderBase.Result.Codes.INTERNAL_ERROR;
+                            result.Code = Result.Codes.INTERNAL_ERROR;
                             result.Message = "Failed to set trigger control mode.";
                         }
-                        if (result.Code == BarcodeReaderBase.Result.Codes.SUCCESS)
+
+                        if (result.Code == Result.Codes.SUCCESS)
                         {
-                            this.mBarcodeEventHandler = new BarcodeEventHandler(this);
-                            this.mAidcBarcodeReader.AddBarcodeListener((Com.Honeywell.Aidc.BarcodeReader.IBarcodeListener)this.mBarcodeEventHandler);
+                            mBarcodeEventHandler = new BarcodeEventHandler(this);
+                            mAidcBarcodeReader.AddBarcodeListener(mBarcodeEventHandler);
                         }
                     }
-                    if (result.Code == BarcodeReaderBase.Result.Codes.SUCCESS)
+                    if (result.Code == Result.Codes.SUCCESS)
                     {
                         try
                         {
-                            this.mAidcBarcodeReader.Claim();
-                            this.mReaderOpened = true;
+                            mAidcBarcodeReader.Claim();
+                            mReaderOpened = true;
                         }
                         catch (Com.Honeywell.Aidc.ScannerUnavailableException)
                         {
-                            result.Code = BarcodeReaderBase.Result.Codes.INTERNAL_ERROR;
+                            result.Code = Result.Codes.INTERNAL_ERROR;
                             result.Message = "Reader is not available.";
                         }
                     }
                 }
                 catch (Java.Lang.Exception ex)
                 {
-                    result.Code = BarcodeReaderBase.Result.Codes.EXCEPTION;
+                    result.Code = Result.Codes.EXCEPTION;
                     result.Message = ex.Message;
                 }
             }
             else
             {
-                result.Code = BarcodeReaderBase.Result.Codes.READER_ALREADY_OPENED;
+                result.Code = Result.Codes.READER_ALREADY_OPENED;
                 result.Message = "Reader was already opened.";
             }
+
             return result;
         }
 
         /// <summary>Closes the barcode reader.</summary>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public override async Task<BarcodeReaderBase.Result> CloseAsync()
+        public override async Task<Result> CloseAsync()
         {
-            BarcodeReader barcodeReader = this;
             Logger.Debug("BarcodeReader", "CloseAsync entry");
-            BarcodeReaderBase.Result result;
-            if (barcodeReader.mReaderOpened)
+
+            Result result;
+            if (mReaderOpened)
             {
-                result = await Task.Run<BarcodeReaderBase.Result>((Func<BarcodeReaderBase.Result>)(() =>
+                result = await Task.Run(() =>
                 {
                     try
                     {
-                        this.mAidcBarcodeReader.Close();
+                        mAidcBarcodeReader.Close();
                     }
                     catch (Java.Lang.Exception ex)
                     {
-                        return new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.EXCEPTION, ex.Message);
+                        return new Result(Result.Codes.EXCEPTION, ex.Message);
                     }
-                    return new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Set method completed.");
-                }));
 
-                if (result.Code == BarcodeReaderBase.Result.Codes.SUCCESS)
-                    barcodeReader.mReaderOpened = false;
+                    return new Result(Result.Codes.SUCCESS, "Set method completed.");
+                });
+
+                if (result.Code == Result.Codes.SUCCESS)
+                {
+                    mReaderOpened = false;
+                }
             }
             else
-                result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Reader already released.");
-            Logger.Info("BarcodeReader", "CloseAsync returns Code:" + (object)result.Code + " Message:" + result.Message);
+            {
+                result = new Result(Result.Codes.SUCCESS, "Reader already released.");
+            }
+
+            Logger.Info("BarcodeReader", "CloseAsync returns Code:" + result.Code + " Message:" + result.Message);
+
             return result;
         }
 
         /// <summary>
         /// Sets a collection of decoder or symbology settings. The settings parameter
         /// contains a collection of key-value pairs where the key identifies the setting.
-        /// <para>You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingKeys" /> to get the
+        /// <para>You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.SettingKeys" /> to get the
         /// predefined setting keys. The setting value type may be any built-in C# types
-        /// such as bool, int, string, etc. You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SettingValues" />
+        /// such as bool, int, string, etc. You may use <see cref="P:DevFromDownUnder.Honeywell.DataCollection.SettingValues" />
         /// to get the predefined values for certain settings. Please reference the API
         /// documentation of the <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" /> class for the
         /// expected setting value types.</para>
@@ -244,7 +268,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// supported by the decoder or the setting value is not accepted by the decoder.</para>
         /// </summary>
         /// <param name="settings">A Dictionary object containing setting key-value pairs.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.Result" /> object containing the success or
         /// failure result of the operation.</returns>
         /// <example>
         /// <code>
@@ -264,39 +288,43 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </example>
         /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingKeys" />
         /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" />
-        public override async Task<BarcodeReaderBase.Result> SetAsync(Dictionary<string, object> settings)
+        public override async Task<Result> SetAsync(Dictionary<string, object> settings)
         {
-            BarcodeReader barcodeReader = this;
             Logger.Debug("BarcodeReader", "SetAsync entry");
-            BarcodeReaderBase.Result result;
-            if (barcodeReader.mReaderOpened)
-                result = await Task.Run<BarcodeReaderBase.Result>((Func<BarcodeReaderBase.Result>)(() =>
-               {
-                   try
-                   {
-                       Dictionary<string, Java.Lang.Object> dictionary = new Dictionary<string, Java.Lang.Object>();
-                       foreach (KeyValuePair<string, object> setting in settings)
-                       {
-                           try
-                           {
-                               dictionary.Add(setting.Key, ObjectTypeHelper.ConvertSettingValueToJavaObject(setting.Value));
-                           }
-                           catch (ArgumentException ex)
-                           {
-                               return new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.INVALID_PARAMETER, ex.Message);
-                           }
-                       }
-                       this.mAidcBarcodeReader.SetProperties((IDictionary<string, Java.Lang.Object>)dictionary);
-                   }
-                   catch (Java.Lang.Exception ex)
-                   {
-                       return new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.EXCEPTION, ex.Message);
-                   }
-                   return new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Set method completed.");
-               }));
+
+            if (mReaderOpened)
+            {
+                return await Task.Run(() =>
+                {
+                    try
+                    {
+                        var dictionary = new Dictionary<string, Java.Lang.Object>();
+                        foreach (KeyValuePair<string, object> setting in settings)
+                        {
+                            try
+                            {
+                                dictionary.Add(setting.Key, ObjectTypeHelper.ConvertSettingValueToJavaObject(setting.Value));
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                return new Result(Result.Codes.INVALID_PARAMETER, ex.Message);
+                            }
+                        }
+
+                        mAidcBarcodeReader.SetProperties(dictionary);
+                    }
+                    catch (Java.Lang.Exception ex)
+                    {
+                        return new Result(Result.Codes.EXCEPTION, ex.Message);
+                    }
+
+                    return new Result(Result.Codes.SUCCESS, "Set method completed.");
+                });
+            }
             else
-                result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            return result;
+            {
+                return new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
+            }
         }
 
         /// <summary>
@@ -306,72 +334,78 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         /// <param name="on">A Boolean value to indicate whether to start or
         /// stop the software trigger.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public override Task<BarcodeReaderBase.Result> SoftwareTriggerAsync(bool on)
+        public override Task<Result> SoftwareTriggerAsync(bool on)
         {
-            BarcodeReaderBase.Result result;
-            if (this.mReaderOpened)
+            Result result;
+            if (mReaderOpened)
             {
                 try
                 {
                     if (on)
                     {
-                        this.mAidcBarcodeReader.SoftwareTrigger(false);
-                        this.mAidcBarcodeReader.SoftwareTrigger(true);
-                        result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Software trigger on.");
+                        mAidcBarcodeReader.SoftwareTrigger(false);
+                        mAidcBarcodeReader.SoftwareTrigger(true);
+                        result = new Result(Result.Codes.SUCCESS, "Software trigger on.");
                     }
                     else
                     {
-                        this.mAidcBarcodeReader.SoftwareTrigger(false);
-                        result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Software trigger off.");
+                        mAidcBarcodeReader.SoftwareTrigger(false);
+                        result = new Result(Result.Codes.SUCCESS, "Software trigger off.");
                     }
                 }
                 catch (Java.Lang.Exception ex)
                 {
-                    result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.EXCEPTION, ex.Message);
+                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
                 }
             }
             else
-                result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            return Task.FromResult<BarcodeReaderBase.Result>(result);
+            {
+                result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
+            }
+
+            return Task.FromResult(result);
         }
 
         /// <summary>Enables or disables the barcode reader.</summary>
         /// <param name="enabled">A Boolean value to indicate whether to enable or
         /// disable the barcode reader.</param>
-        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
+        /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public override Task<BarcodeReaderBase.Result> EnableAsync(bool enabled)
+        public override Task<Result> EnableAsync(bool enabled)
         {
-            BarcodeReaderBase.Result result;
-            if (this.mReaderOpened)
+            Result result;
+            if (mReaderOpened)
             {
                 try
                 {
                     if (enabled)
                     {
-                        this.mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
-                        result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Hardware trigger enabled.");
+                        mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
+                        result = new Result(Result.Codes.SUCCESS, "Hardware trigger enabled.");
                     }
                     else
                     {
-                        this.mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "disable");
-                        result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Hardware trigger disabled.");
+                        mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "disable");
+                        result = new Result(Result.Codes.SUCCESS, "Hardware trigger disabled.");
                     }
                 }
                 catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
                 {
-                    result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.INTERNAL_ERROR, "Failed to set trigger control mode.");
+                    result = new Result(Result.Codes.INTERNAL_ERROR, "Failed to set trigger control mode.");
                 }
                 catch (Java.Lang.Exception ex)
                 {
-                    result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.EXCEPTION, ex.Message);
+                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
                 }
             }
             else
-                result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            return Task.FromResult<BarcodeReaderBase.Result>(result);
+            {
+                result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
+            }
+
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -387,15 +421,22 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         public static async Task<IList<BarcodeReaderInfo>> GetConnectedBarcodeReaders(object context = null)
         {
             if (context == null)
-                context = (object)Application.Context;
+            {
+                context = Application.Context;
+            }
             else if (!(context is Context))
+            {
                 throw new ArgumentException("Invalid context type, must be Android.Content.Context.", "context");
-            return await Task.Run<IList<BarcodeReaderInfo>>((Func<IList<BarcodeReaderInfo>>)(() =>
+            }
+
+            return await Task.Run(() =>
            {
-               BarcodeReaderManager barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
+               using BarcodeReaderManager barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
+
                barcodeReaderManager.Init();
+
                return barcodeReaderManager.ListConnectedBarcodeDevices();
-           }));
+           });
         }
 
         /// <summary>Releases the barcode reader resources.</summary>
@@ -403,7 +444,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             try
             {
-                this.mAidcBarcodeReader.Close();
+                mAidcBarcodeReader.Close();
             }
             catch (Java.Lang.Exception ex)
             {

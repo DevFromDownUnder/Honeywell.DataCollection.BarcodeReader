@@ -14,7 +14,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <param name="source">The BarcodeReader object that originates the event.</param>
         internal BarcodeEventHandler(BarcodeReader source) : base()
         {
-            this.mBarcodeReader = source;
+            mBarcodeReader = source;
         }
 
         /// <summary>
@@ -25,12 +25,17 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         public void OnBarcodeEvent(Com.Honeywell.Aidc.BarcodeReadEvent e)
         {
             Logger.Info("BarcodeReader", "Received barcode data:" + e.BarcodeData + " CodeId:" + e.CodeId + " AimId:" + e.AimId);
-            if (!this.mBarcodeReader.HasBarcodeDataReadySubscriber)
+
+            if (!mBarcodeReader.HasBarcodeDataReadySubscriber)
+            {
                 return;
-            string aimId = e.AimId[1..];
-            SymbologyMap symbologyMap = BarcodeSymbologies.GetSymbologyMap(e.CodeId, aimId);
-            Logger.Info("BarcodeReader", "Symbology ID:" + (object)symbologyMap.id + " Honeywell ID:" + symbologyMap.honeywellId + " aimId:" + symbologyMap.aimId + " Name:" + symbologyMap.name);
-            this.mBarcodeReader.OnBarcodeDataRead(new BarcodeDataArgs(e.BarcodeData, symbologyMap.id, symbologyMap.name, DateTime.Now));
+            }
+
+            var symbologyMap = BarcodeSymbologies.GetSymbologyMap(e.CodeId, e.AimId[1..]);
+
+            Logger.Info("BarcodeReader", "Symbology ID:" + symbologyMap.id + " Honeywell ID:" + symbologyMap.honeywellId + " aimId:" + symbologyMap.aimId + " Name:" + symbologyMap.name);
+
+            mBarcodeReader.OnBarcodeDataRead(new BarcodeDataArgs(e.BarcodeData, symbologyMap.id, symbologyMap.name, DateTime.Now));
         }
 
         /// <summary>Implements the IBarcodeListener interface.</summary>

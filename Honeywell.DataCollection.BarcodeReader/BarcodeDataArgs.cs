@@ -7,52 +7,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     /// </summary>
     public class BarcodeDataArgs : EventArgs
     {
-        private readonly string data;
-        private readonly uint symbType;
-        private readonly string symbName;
-        private readonly DateTime timestamp;
-
         /// <summary>The scanned barcode data.</summary>
-        public string Data
-        {
-            get
-            {
-                return this.data;
-            }
-        }
+        public string Data { get; }
 
         /// <summary>
         /// The symbology type of the scanned barcode. The symbology types are
         /// defined in the <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeSymbologies" /> class.
         /// </summary>
         /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeSymbologies" />
-        public uint SymbologyType
-        {
-            get
-            {
-                return this.symbType;
-            }
-        }
+        public uint SymbologyType { get; }
 
         /// <summary>
         /// The string representation of <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeDataArgs.SymbologyType" />.
         /// </summary>
-        public string SymbologyName
-        {
-            get
-            {
-                return this.symbName;
-            }
-        }
+        public string SymbologyName { get; }
 
         /// <summary>The time when the barcode was scanned.</summary>
-        public DateTime TimeStamp
-        {
-            get
-            {
-                return this.timestamp;
-            }
-        }
+        public DateTime TimeStamp { get; }
 
         /// <summary>
         /// Creates a BarcodeDataArgs object containing the specified info.
@@ -63,10 +34,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <param name="time">The time when the barcode was scanned.</param>
         internal BarcodeDataArgs(string data, uint symbType, string symbName, DateTime time)
         {
-            this.data = data;
-            this.symbType = symbType;
-            this.symbName = symbName;
-            this.timestamp = time;
+            Data = data;
+            SymbologyType = symbType;
+            SymbologyName = symbName;
+            TimeStamp = time;
         }
     }
 }

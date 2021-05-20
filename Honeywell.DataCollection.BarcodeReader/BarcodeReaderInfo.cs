@@ -20,9 +20,9 @@
 
         internal BarcodeReaderInfo(string scannerName)
         {
-            this.ScannerName = scannerName;
-            this.ScannerID = string.Empty;
-            this.ScanneFriendlyName = string.Empty;
+            ScannerName = scannerName;
+            ScannerID = string.Empty;
+            ScanneFriendlyName = string.Empty;
         }
     }
 }

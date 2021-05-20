@@ -13,7 +13,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     /// </summary>
     internal class BarcodeReaderManager : Java.Lang.Object, AidcManager.ICreatedCallback, IJavaObject, IDisposable
     {
-        private static BarcodeReaderManager sInstance = (BarcodeReaderManager)null;
+        private static BarcodeReaderManager sInstance = null;
         private static readonly AutoResetEvent sServiceConnectedEvent = new AutoResetEvent(false);
 
         /// <summary>
@@ -21,15 +21,18 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// it is declared as static. It can be used to create multiple
         /// instances of the Java BarcodeReader objects.
         /// </summary>
-        private static AidcManager sAidcManager = (AidcManager)null;
+        private static AidcManager sAidcManager = null;
 
         private readonly Context mAppContext;
 
         private BarcodeReaderManager(Context context) : base()
         {
             if (context == null)
+            {
                 throw new ArgumentNullException();
-            this.mAppContext = context.ApplicationContext;
+            }
+
+            mAppContext = context.ApplicationContext;
         }
 
         /// <summary>
@@ -45,9 +48,12 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns></returns>
         internal static BarcodeReaderManager Create(Context context)
         {
-            if (BarcodeReaderManager.sInstance == null)
-                BarcodeReaderManager.sInstance = new BarcodeReaderManager(context);
-            return BarcodeReaderManager.sInstance;
+            if (sInstance == null)
+            {
+                sInstance = new BarcodeReaderManager(context);
+            }
+
+            return sInstance;
         }
 
         /// <summary>
@@ -58,15 +64,17 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>A Java AidcManager object.</returns>
         internal AidcManager Init()
         {
-            if (BarcodeReaderManager.sAidcManager == null)
+            if (sAidcManager == null)
             {
-                lock (this.mAppContext)
+                lock (mAppContext)
                 {
                     try
                     {
                         Logger.Debug("BarcodeReader", "Creating AidcManager");
-                        AidcManager.Create(this.mAppContext, (AidcManager.ICreatedCallback)this);
-                        BarcodeReaderManager.sServiceConnectedEvent.WaitOne();
+
+                        AidcManager.Create(mAppContext, this);
+
+                        sServiceConnectedEvent.WaitOne();
                     }
                     catch (Java.Lang.Exception ex)
                     {
@@ -74,25 +82,30 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     }
                 }
             }
-            return BarcodeReaderManager.sAidcManager;
+
+            return sAidcManager;
         }
 
         void AidcManager.ICreatedCallback.OnCreated(AidcManager aidcManager)
         {
             Logger.Debug("BarcodeReader", "AidcManager OnCreated callback");
-            BarcodeReaderManager.sAidcManager = aidcManager;
-            BarcodeReaderManager.sServiceConnectedEvent.Set();
+
+            sAidcManager = aidcManager;
+            sServiceConnectedEvent.Set();
         }
 
         internal IList<BarcodeReaderInfo> ListConnectedBarcodeDevices()
         {
-            List<BarcodeReaderInfo> barcodeReaderInfoList = new List<BarcodeReaderInfo>();
-            if (BarcodeReaderManager.sAidcManager != null)
+            var barcodeReaderInfoList = new List<BarcodeReaderInfo>();
+            if (sAidcManager != null)
             {
-                foreach (Com.Honeywell.Aidc.BarcodeReaderInfo connectedBarcodeDevice in (IEnumerable<Com.Honeywell.Aidc.BarcodeReaderInfo>)BarcodeReaderManager.sAidcManager.ListConnectedBarcodeDevices())
+                foreach (var connectedBarcodeDevice in sAidcManager.ListConnectedBarcodeDevices())
+                {
                     barcodeReaderInfoList.Add(new BarcodeReaderInfo(connectedBarcodeDevice.Name));
+                }
             }
-            return (IList<BarcodeReaderInfo>)barcodeReaderInfoList;
+
+            return barcodeReaderInfoList;
         }
     }
 }

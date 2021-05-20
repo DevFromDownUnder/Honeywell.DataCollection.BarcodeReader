@@ -14,7 +14,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <param name="source">The AidcManager object that originates the event.</param>
         internal BarcodeDeviceEventHandler(BarcodeReader source) : base()
         {
-            this.mBarcodeReader = source;
+            mBarcodeReader = source;
         }
 
         /// <summary>
@@ -24,9 +24,13 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         public void OnBarcodeDeviceConnectionEvent(Com.Honeywell.Aidc.BarcodeDeviceConnectionEvent e)
         {
             Logger.Info("BarcodeReader", "Device Connection status: " + e.ConnectionStatus.ToString() + ", Scanner Name = " + e.BarcodeReaderInfo.Name);
-            if (!this.mBarcodeReader.HasBarcodeDeviceSubscriber)
+
+            if (!mBarcodeReader.HasBarcodeDeviceSubscriber)
+            {
                 return;
-            this.mBarcodeReader.OnConnectedStateChanged(new ConnectionStateArgs(e.BarcodeReaderInfo.ScannerId, e.BarcodeReaderInfo.Name, e.BarcodeReaderInfo.FriendlyName, e.ConnectionStatus));
+            }
+
+            mBarcodeReader.OnConnectedStateChanged(new ConnectionStateArgs(e.BarcodeReaderInfo.ScannerId, e.BarcodeReaderInfo.Name, e.BarcodeReaderInfo.FriendlyName, e.ConnectionStatus));
         }
     }
 }

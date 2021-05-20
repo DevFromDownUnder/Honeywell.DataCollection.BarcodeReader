@@ -38,50 +38,26 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// can be used to get the setting key for a specific setting.
         /// </summary>
         /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
-        public virtual BarcodeReaderSettingKeys SettingKeys
-        {
-            get
-            {
-                return this.mSettingKeys;
-            }
-        }
+        public virtual BarcodeReaderSettingKeys SettingKeys => mSettingKeys;
 
         /// <summary>
         /// Gets the associated <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" /> object that
         /// can be used to get predefined setting values for certain settings.
         /// </summary>
         /// <seealso cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.SetAsync(System.Collections.Generic.Dictionary{System.String,System.Object})" />
-        public virtual BarcodeReaderSettingValues SettingValues
-        {
-            get
-            {
-                return this.mSettingValues;
-            }
-        }
+        public virtual BarcodeReaderSettingValues SettingValues => mSettingValues;
 
         /// <summary>
         /// Returns a boolean value to indicate whether there is a subscriber
         /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.BarcodeDataReady" /> event.
         /// </summary>
-        internal bool HasBarcodeDataReadySubscriber
-        {
-            get
-            {
-                return this.BarcodeDataReady != null;
-            }
-        }
+        internal bool HasBarcodeDataReadySubscriber => BarcodeDataReady != null;
 
         /// <summary>
         /// Returns a boolean value to indicate whether there is a subscriber
         /// for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.ConnectionStateChanged" /> event.
         /// </summary>
-        internal bool HasBarcodeDeviceSubscriber
-        {
-            get
-            {
-                return this.ConnectionStateChanged != null;
-            }
-        }
+        internal bool HasBarcodeDeviceSubscriber => ConnectionStateChanged != null;
 
         /// <summary>Occurs when a barcode is successfully read.</summary>
         public event EventHandler<BarcodeDataArgs> BarcodeDataReady;
@@ -97,8 +73,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// an activity or application context.</param>
         protected BarcodeReaderBase(object context = null)
         {
-            this.mScannerName = (string)null;
-            this.mContext = context;
+            mScannerName = null;
+            mContext = context;
         }
 
         /// <summary>
@@ -111,14 +87,14 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// be an activity or application context.</param>
         protected BarcodeReaderBase(string scannerName, object context = null)
         {
-            this.mScannerName = scannerName;
-            this.mContext = context;
+            mScannerName = scannerName;
+            mContext = context;
         }
 
         /// <summary>BarcodeReaderBase class destructor.</summary>
         ~BarcodeReaderBase()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -126,18 +102,18 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public abstract Task<BarcodeReaderBase.Result> OpenAsync();
+        public abstract Task<Result> OpenAsync();
 
         /// <summary>Closes the barcode reader.</summary>
         /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public abstract Task<BarcodeReaderBase.Result> CloseAsync();
+        public abstract Task<Result> CloseAsync();
 
         /// <summary>Sets a collection of decoder or symbology settings.</summary>
         /// <param name="settings">A Dictionary object containing setting key-value pairs.</param>
         /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public abstract Task<BarcodeReaderBase.Result> SetAsync(Dictionary<string, object> settings);
+        public abstract Task<Result> SetAsync(Dictionary<string, object> settings);
 
         /// <summary>
         /// Starts or stops the software trigger. When the on parameter is true, it
@@ -148,14 +124,14 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// stop the software trigger.</param>
         /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public abstract Task<BarcodeReaderBase.Result> SoftwareTriggerAsync(bool on);
+        public abstract Task<Result> SoftwareTriggerAsync(bool on);
 
         /// <summary>Enables or disables the barcode reader.</summary>
         /// <param name="enabled">A Boolean value to indicate whether to enable or
         /// disable the barcode reader.</param>
         /// <returns>A <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderBase.Result" /> object containing the success or
         /// failure result of the operation.</returns>
-        public abstract Task<BarcodeReaderBase.Result> EnableAsync(bool enabled);
+        public abstract Task<Result> EnableAsync(bool enabled);
 
         /// <summary>Releases the barcode reader resources.</summary>
         protected abstract void DisposeReader();
@@ -167,10 +143,13 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         internal virtual void OnBarcodeDataRead(BarcodeDataArgs e)
         {
             // ISSUE: reference to a compiler-generated field
-            EventHandler<BarcodeDataArgs> barcodeDataReady = this.BarcodeDataReady;
+            EventHandler<BarcodeDataArgs> barcodeDataReady = BarcodeDataReady;
             if (barcodeDataReady == null)
+            {
                 return;
-            barcodeDataReady((object)this, e);
+            }
+
+            barcodeDataReady(this, e);
         }
 
         /// <summary>
@@ -180,20 +159,26 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         internal virtual void OnConnectedStateChanged(ConnectionStateArgs e)
         {
             // ISSUE: reference to a compiler-generated field
-            EventHandler<ConnectionStateArgs> connectionStateChanged = this.ConnectionStateChanged;
+            EventHandler<ConnectionStateArgs> connectionStateChanged = ConnectionStateChanged;
             if (connectionStateChanged == null)
+            {
                 return;
-            connectionStateChanged((object)this, e);
+            }
+
+            connectionStateChanged(this, e);
         }
 
         /// <summary>Releases resources.</summary>
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (this.disposedValue)
+            if (disposedValue)
+            {
                 return;
-            this.DisposeReader();
-            this.disposedValue = true;
+            }
+
+            DisposeReader();
+            disposedValue = true;
         }
 
         /// <summary>
@@ -201,7 +186,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize((object)this);
         }
 
@@ -220,14 +205,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             /// </summary>
             public int Code
             {
-                get
-                {
-                    return this.mCode;
-                }
-                internal set
-                {
-                    this.mCode = value;
-                }
+                get => mCode;
+                internal set => mCode = value;
             }
 
             /// <summary>
@@ -235,14 +214,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             /// </summary>
             public string Message
             {
-                get
-                {
-                    return this.mMessage;
-                }
-                internal set
-                {
-                    this.mMessage = value;
-                }
+                get => mMessage;
+                internal set => mMessage = value;
             }
 
             /// <summary>
@@ -254,8 +227,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             /// message for the operation status.</param>
             internal Result(int code, string message)
             {
-                this.mCode = code;
-                this.mMessage = message;
+                mCode = code;
+                mMessage = message;
             }
 
             /// <summary>
@@ -269,15 +242,18 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             /// message for the operation status.</param>
             internal Result(int facility, int error, string message)
             {
-                this.mCode = BarcodeReaderBase.Result.FormatCode(facility, error);
-                this.mMessage = message;
+                mCode = FormatCode(facility, error);
+                mMessage = message;
             }
 
             internal static int FormatCode(int facility, int error)
             {
                 int num = 0;
-                if (error != 0 && ((long)error & 4294901760L) == 0L)
+                if (error != 0 && (error & 0xFFFF0000) == 0L)
+                {
                     num = int.MinValue | facility << 16 | error;
+                }
+
                 return num;
             }
 
@@ -291,22 +267,22 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 public static readonly int SUCCESS = 0;
 
                 /// <summary>Unexpected exception</summary>
-                public static readonly int EXCEPTION = BarcodeReaderBase.Result.FormatCode(2411, 1064);
+                public static readonly int EXCEPTION = FormatCode(2411, 1064);
 
                 /// <summary>Invalid parameter.</summary>
-                public static readonly int INVALID_PARAMETER = BarcodeReaderBase.Result.FormatCode(2411, 87);
+                public static readonly int INVALID_PARAMETER = FormatCode(2411, 87);
 
                 /// <summary>Internal error.</summary>
-                public static readonly int INTERNAL_ERROR = BarcodeReaderBase.Result.FormatCode(2411, 1359);
+                public static readonly int INTERNAL_ERROR = FormatCode(2411, 1359);
 
                 /// <summary>The barcode reader was already opened.</summary>
-                public static readonly int READER_ALREADY_OPENED = BarcodeReaderBase.Result.FormatCode(2411, 2402);
+                public static readonly int READER_ALREADY_OPENED = FormatCode(2411, 2402);
 
                 /// <summary>The feature is not supported.</summary>
-                public static readonly int FEATURE_NOT_SUPPORTED = BarcodeReaderBase.Result.FormatCode(2411, 50);
+                public static readonly int FEATURE_NOT_SUPPORTED = FormatCode(2411, 50);
 
                 /// <summary>No active scanner connection.</summary>
-                public static readonly int NO_ACTIVE_CONNECTION = BarcodeReaderBase.Result.FormatCode(2411, 1229);
+                public static readonly int NO_ACTIVE_CONNECTION = FormatCode(2411, 1229);
 
                 internal Codes()
                 {

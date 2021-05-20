@@ -12,31 +12,30 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>A Java object.</returns>
         public static Java.Lang.Object ConvertSettingValueToJavaObject(object value)
         {
-            Java.Lang.Object @object = (Java.Lang.Object)null;
-            if (value != null)
+            if (value == null)
             {
-                Type type = value.GetType();
-                try
+                return null;
+            }
+
+            try
+            {
+                //Haven't checked I guess types are only bool, int and string?
+                if (value is bool)
                 {
-                    if (type == typeof(bool))
-                        @object = (Java.Lang.Object)new Java.Lang.Boolean(Convert.ToBoolean(value));
-                    else if (type == typeof(int))
-                    {
-                        @object = (Java.Lang.Object)new Java.Lang.Integer(Convert.ToInt32(value));
-                    }
-                    else
-                    {
-                        if (!(type == typeof(string)))
-                            throw new ArgumentException("Unsupported setting value type: " + type.FullName);
-                        @object = (Java.Lang.Object)new Java.Lang.String(Convert.ToString(value));
-                    }
+                    return new Java.Lang.Boolean(Convert.ToBoolean(value));
                 }
-                catch
+                else if (value is int)
                 {
-                    throw new ArgumentException("Unsupported setting value type: " + type.FullName);
+                    return new Java.Lang.Integer(Convert.ToInt32(value));
+                }
+                else if (value is string)
+                {
+                    return new Java.Lang.String(Convert.ToString(value));
                 }
             }
-            return @object;
+            catch { }
+
+            throw new ArgumentException("Unsupported setting value type: " + value.GetType().FullName);
         }
     }
 }

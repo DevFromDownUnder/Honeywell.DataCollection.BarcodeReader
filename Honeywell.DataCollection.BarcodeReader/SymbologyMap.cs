@@ -21,7 +21,7 @@
 
         public SymbologyMap Clone()
         {
-            return (SymbologyMap)this.MemberwiseClone();
+            return MemberwiseClone() as SymbologyMap;
         }
     }
 }
