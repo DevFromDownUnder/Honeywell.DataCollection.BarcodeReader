@@ -1,0 +1,85 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- manual
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**\*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  releaseProject: '$(Build.SourcesDirectory)\Honeywell.DataCollection.BarcodeReader\Honeywell.DataCollection.BarcodeReader.csproj'
+  timestamp: $[format('{0:yyyyMMddHHmmss}', pipeline.startTime)]
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)\Honeywell.DataCollection.BarcodeReader\bin\$(buildConfiguration)\'
+    Contents: 'DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)\Honeywell.DataCollection.BarcodeReader\'
+    Contents: 'DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.nuspec'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: ExecutableInfoReader@1
+  inputs:
+    fileName: '$(Build.ArtifactStagingDirectory)\DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll'
+    variableRoot: 'Honeywell.DataCollection.BarcodeReader'
+    loadProductVersion: false
+    loadAssemblyVersion: true
+
+- task: SimpleNuspecVersionSetter@1
+  inputs:
+    RootDirectory: '$(Build.ArtifactStagingDirectory)'
+    NewVersion: '$(packageVersion)'
+
+- task: VariableSetTask@1
+  inputs:
+    VariableName: 'packageVersion'
+    Value: '$(Honeywell.DataCollection.BarcodeReader.AssemblyVersionInfo.Version)'
+    IsSecret: false
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '$(Build.ArtifactStagingDirectory)\DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.nuspec'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'packageVersion'
+    basePath: '$(Build.ArtifactStagingDirectory)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)\*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'Honeywell.DataCollection.BarcodeReader/Honeywell.DataCollection.BarcodeReader-nuget-release'
+
+- task: DotNetCoreCLI@2
+  displayName: Nuget.org api key workaround
+  inputs:
+    command: custom
+    custom: nuget
+    arguments: >
+      push $(Build.ArtifactStagingDirectory)\*.nupkg
+      -s https://api.nuget.org/v3/index.json
+      -k $(NugetPAT)
