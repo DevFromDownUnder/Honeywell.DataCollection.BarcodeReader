@@ -7,10 +7,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     /// </summary>
     public class BarcodeDataArgs : EventArgs
     {
-        private string data;
-        private uint symbType;
-        private string symbName;
-        private DateTime timestamp;
+        private readonly string data;
+        private readonly uint symbType;
+        private readonly string symbName;
+        private readonly DateTime timestamp;
 
         /// <summary>The scanned barcode data.</summary>
         public string Data

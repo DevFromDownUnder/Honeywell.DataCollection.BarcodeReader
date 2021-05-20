@@ -159,7 +159,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <summary>Grid Matrix barcode symbology.</summary>
         public static readonly uint GridMatrix = 46;
 
-        private static List<SymbologyMap> sSymbologyMappingList = new List<SymbologyMap>()
+        private static readonly List<SymbologyMap> sSymbologyMappingList = new List<SymbologyMap>()
     {
       new SymbologyMap()
       {

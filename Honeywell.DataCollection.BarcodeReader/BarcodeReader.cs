@@ -160,7 +160,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
                         {
                             this.mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
                         }
-                        catch (Com.Honeywell.Aidc.UnsupportedPropertyException ex)
+                        catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
                         {
                             result.Code = BarcodeReaderBase.Result.Codes.INTERNAL_ERROR;
                             result.Message = "Failed to set trigger control mode.";
@@ -178,7 +178,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
                             this.mAidcBarcodeReader.Claim();
                             this.mReaderOpened = true;
                         }
-                        catch (Com.Honeywell.Aidc.ScannerUnavailableException ex)
+                        catch (Com.Honeywell.Aidc.ScannerUnavailableException)
                         {
                             result.Code = BarcodeReaderBase.Result.Codes.INTERNAL_ERROR;
                             result.Message = "Reader is not available.";
@@ -360,7 +360,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
                         result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.SUCCESS, "Hardware trigger disabled.");
                     }
                 }
-                catch (Com.Honeywell.Aidc.UnsupportedPropertyException ex)
+                catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
                 {
                     result = new BarcodeReaderBase.Result(BarcodeReaderBase.Result.Codes.INTERNAL_ERROR, "Failed to set trigger control mode.");
                 }

@@ -6,7 +6,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
 {
     internal class BarcodeEventHandler : Java.Lang.Object, Com.Honeywell.Aidc.BarcodeReader.IBarcodeListener, IEventListener, IJavaObject, IDisposable
     {
-        private BarcodeReader mBarcodeReader;
+        private readonly BarcodeReader mBarcodeReader;
 
         /// <summary>
         /// Create a BarcodeReaderEventHandler object with the specified handler.
@@ -27,7 +27,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
             Logger.Info("BarcodeReader", "Received barcode data:" + e.BarcodeData + " CodeId:" + e.CodeId + " AimId:" + e.AimId);
             if (!this.mBarcodeReader.HasBarcodeDataReadySubscriber)
                 return;
-            string aimId = e.AimId.Substring(1);
+            string aimId = e.AimId[1..];
             SymbologyMap symbologyMap = BarcodeSymbologies.GetSymbologyMap(e.CodeId, aimId);
             Logger.Info("BarcodeReader", "Symbology ID:" + (object)symbologyMap.id + " Honeywell ID:" + symbologyMap.honeywellId + " aimId:" + symbologyMap.aimId + " Name:" + symbologyMap.name);
             this.mBarcodeReader.OnBarcodeDataRead(new BarcodeDataArgs(e.BarcodeData, symbologyMap.id, symbologyMap.name, DateTime.Now));

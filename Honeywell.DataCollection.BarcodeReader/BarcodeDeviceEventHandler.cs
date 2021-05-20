@@ -6,7 +6,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
 {
     internal class BarcodeDeviceEventHandler : Java.Lang.Object, Com.Honeywell.Aidc.AidcManager.IBarcodeDeviceListener, IEventListener, IJavaObject, IDisposable
     {
-        private BarcodeReader mBarcodeReader;
+        private readonly BarcodeReader mBarcodeReader;
 
         /// <summary>
         /// Create a BarcodeDeviceEventHandler object with the specified handler.

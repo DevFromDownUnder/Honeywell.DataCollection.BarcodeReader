@@ -23,9 +23,11 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         internal ConnectionStateArgs(string Id, string name, string friendlyName, int connectionState)
         {
-            this.BarcodeReaderInfo = new BarcodeReaderInfo(name);
-            this.BarcodeReaderInfo.ScannerID = Id;
-            this.BarcodeReaderInfo.ScanneFriendlyName = friendlyName;
+            this.BarcodeReaderInfo = new BarcodeReaderInfo(name)
+            {
+                ScannerID = Id,
+                ScanneFriendlyName = friendlyName
+            };
             if (connectionState == 0)
                 this.State = ConnectionStateArgs.ConnectionStates.DISCONNECTED;
             else

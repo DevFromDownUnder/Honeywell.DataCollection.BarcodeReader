@@ -14,7 +14,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     internal class BarcodeReaderManager : Java.Lang.Object, AidcManager.ICreatedCallback, IJavaObject, IDisposable
     {
         private static BarcodeReaderManager sInstance = (BarcodeReaderManager)null;
-        private static AutoResetEvent sServiceConnectedEvent = new AutoResetEvent(false);
+        private static readonly AutoResetEvent sServiceConnectedEvent = new AutoResetEvent(false);
 
         /// <summary>
         /// An application only needs one instance of AidcManager; therefore,
@@ -23,7 +23,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         private static AidcManager sAidcManager = (AidcManager)null;
 
-        private Context mAppContext;
+        private readonly Context mAppContext;
 
         private BarcodeReaderManager(Context context) : base()
         {
