@@ -444,7 +444,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             try
             {
-                mAidcBarcodeReader.Close();
+                if (mReaderOpened)
+                {
+                    mAidcBarcodeReader.Close();
+                }
             }
             catch (Java.Lang.Exception ex)
             {
@@ -562,6 +565,24 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             else
             {
                 return new List<string>();
+            }
+        }
+
+        /// <summary>
+        /// Capture image from the scanner
+        /// </summary>
+        /// <returns>Captured image</returns>
+        public Android.Graphics.Bitmap CaptureImage()
+        {
+            //Doesn't appear to require it to be opened
+            //However mAidcBarcodeReader will be null in this library if you don't open it
+            if (mReaderOpened)
+            {
+                return mAidcBarcodeReader.CaptureImage();
+            }
+            else
+            {
+                return null;
             }
         }
     }
