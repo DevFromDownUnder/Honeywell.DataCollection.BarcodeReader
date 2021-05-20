@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.AIDC.CrossPlatform
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
     /// An internal helper class to convert object types between C# and Java.

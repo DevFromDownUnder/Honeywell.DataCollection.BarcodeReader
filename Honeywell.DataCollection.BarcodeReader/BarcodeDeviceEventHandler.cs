@@ -2,7 +2,7 @@
 using Java.Util;
 using System;
 
-namespace Honeywell.AIDC.CrossPlatform.BarcodeReader
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader
 {
     internal class BarcodeDeviceEventHandler : Java.Lang.Object, Com.Honeywell.Aidc.AidcManager.IBarcodeDeviceListener, IEventListener, IJavaObject, IDisposable
     {

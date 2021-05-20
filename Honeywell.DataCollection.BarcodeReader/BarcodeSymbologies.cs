@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Honeywell.AIDC.CrossPlatform
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>Defines the symbology identifiers.</summary>
     public static class BarcodeSymbologies

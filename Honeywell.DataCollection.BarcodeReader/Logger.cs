@@ -1,6 +1,6 @@
 ﻿using Android.Util;
 
-namespace Honeywell.AIDC.CrossPlatform
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     internal class Logger
     {

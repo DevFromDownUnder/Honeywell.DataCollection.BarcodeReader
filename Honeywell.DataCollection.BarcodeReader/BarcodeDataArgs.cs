@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Honeywell.AIDC.CrossPlatform
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
-    /// Provides data for the <see cref="E:Honeywell.AIDC.CrossPlatform.BarcodeReaderBase.BarcodeDataReady" /> event.
+    /// Provides data for the <see cref="E:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReaderBase.BarcodeDataReady" /> event.
     /// </summary>
     public class BarcodeDataArgs : EventArgs
     {
@@ -23,9 +23,9 @@ namespace Honeywell.AIDC.CrossPlatform
 
         /// <summary>
         /// The symbology type of the scanned barcode. The symbology types are
-        /// defined in the <see cref="T:Honeywell.AIDC.CrossPlatform.BarcodeSymbologies" /> class.
+        /// defined in the <see cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeSymbologies" /> class.
         /// </summary>
-        /// <seealso cref="T:Honeywell.AIDC.CrossPlatform.BarcodeSymbologies" />
+        /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeSymbologies" />
         public uint SymbologyType
         {
             get
@@ -35,7 +35,7 @@ namespace Honeywell.AIDC.CrossPlatform
         }
 
         /// <summary>
-        /// The string representation of <see cref="P:Honeywell.AIDC.CrossPlatform.BarcodeDataArgs.SymbologyType" />.
+        /// The string representation of <see cref="P:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeDataArgs.SymbologyType" />.
         /// </summary>
         public string SymbologyName
         {

@@ -1,4 +1,4 @@
-﻿namespace Honeywell.AIDC.CrossPlatform
+﻿namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     internal class SymbologyMap
     {

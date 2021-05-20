@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Honeywell.AIDC.CrossPlatform
+namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
     /// Initiates the connection to the Data Collection Service via the Java

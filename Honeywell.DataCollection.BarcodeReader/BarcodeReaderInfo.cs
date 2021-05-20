@@ -1,4 +1,4 @@
-﻿namespace Honeywell.AIDC.CrossPlatform
+﻿namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 {
     /// <summary>
     /// This class provides information of a barcode reader device.
@@ -7,7 +7,7 @@
     {
         /// <summary>
         /// The name uniquely identifies the scanner. This name can be used in
-        /// the <see cref="M:Honeywell.AIDC.CrossPlatform.BarcodeReader.#ctor(System.String,System.Object)" />
+        /// the <see cref="M:DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.BarcodeReader.#ctor(System.String,System.Object)" />
         /// constructor.
         /// </summary>
         public string ScannerName { get; private set; }
