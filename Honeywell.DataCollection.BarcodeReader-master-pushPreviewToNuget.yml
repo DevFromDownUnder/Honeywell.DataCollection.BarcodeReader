@@ -37,7 +37,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)\Honeywell.DataCollection.BarcodeReader\'
+    SourceFolder: '$(Build.SourcesDirectory)\'
     Contents: 'DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.nuspec'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
