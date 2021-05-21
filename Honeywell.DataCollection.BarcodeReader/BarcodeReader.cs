@@ -37,6 +37,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         internal const string LOG_TAG = "BarcodeReader";
         private static BarcodeDeviceEventHandler sBarcodeDeviceEventHandler;
 
+        public const string DEFAULT_PROFILE = "DEFAULT";
+
         /// <summary>
         /// Gets a boolean value indicating whether the barcode reader is opened.
         /// </summary>
@@ -466,7 +468,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </returns>
         public async Task<Result> LoadDefaultProfileAsync()
         {
-            return await LoadProfileAsync(null);
+            return await LoadProfileAsync(DEFAULT_PROFILE);
         }
 
         /// <summary>
