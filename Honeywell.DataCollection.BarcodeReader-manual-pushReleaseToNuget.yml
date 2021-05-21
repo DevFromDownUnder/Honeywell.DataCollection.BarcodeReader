@@ -33,7 +33,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)\Honeywell.DataCollection.BarcodeReader\bin\$(buildConfiguration)\'
     Contents: 'DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\nuget'
 
 - task: CopyFiles@2
   inputs:
@@ -43,7 +43,7 @@ steps:
 
 - task: ExecutableInfoReader@1
   inputs:
-    fileName: '$(Build.ArtifactStagingDirectory)\DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll'
+    fileName: '$(Build.ArtifactStagingDirectory)\nuget\DevFromDownUnder.Honeywell.DataCollection.BarcodeReader.dll'
     variableRoot: 'Honeywell.DataCollection.BarcodeReader'
     loadProductVersion: false
     loadAssemblyVersion: true
