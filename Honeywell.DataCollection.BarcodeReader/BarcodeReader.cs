@@ -489,18 +489,29 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 {
                     try
                     {
+                        //For some dumb reason it wipes your listeners
+                        //May as well do it safetly
+                        mAidcBarcodeReader.RemoveBarcodeListener(mBarcodeEventHandler);
+
                         if (mAidcBarcodeReader.LoadProfile(profileName))
                         {
+
                             return new Result(Result.Codes.SUCCESS, "Profile loaded.");
                         }
                         else
                         {
+
                             return new Result(Result.Codes.INVALID_PARAMETER, "Profile not found.");
                         }
                     }
                     catch (Java.Lang.Exception ex)
                     {
                         return new Result(Result.Codes.EXCEPTION, ex.Message);
+                    }
+                    finally
+                    {
+                        //Re-add our listener
+                        mAidcBarcodeReader.AddBarcodeListener(mBarcodeEventHandler);
                     }
                 });
             }
@@ -568,6 +579,16 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             {
                 return new List<string>();
             }
+        }
+
+        /// <summary>
+        /// Determine if profile exists
+        /// </summary>
+        /// <param name="name">profile name</param>
+        /// <returns>Returns if profile name exists</returns>
+        public bool DoesProfileExist(string name)
+        {
+            return mReaderOpened && (mAidcBarcodeReader.ProfileNames?.Contains(name) ?? false);
         }
 
         /// <summary>
