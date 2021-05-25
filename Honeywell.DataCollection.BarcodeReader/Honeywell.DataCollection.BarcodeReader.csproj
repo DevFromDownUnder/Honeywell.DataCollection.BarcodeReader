@@ -53,6 +53,7 @@
     <Compile Include="BarcodeReader.cs" />
     <Compile Include="BarcodeReaderBase.cs" />
     <Compile Include="BarcodeReaderInfo.cs" />
+    <Compile Include="BarcodeReaderManagerProfile.cs" />
     <Compile Include="BarcodeReaderManager.cs" />
     <Compile Include="BarcodeReaderSettingKeys.cs" />
     <Compile Include="BarcodeReaderSettingValues.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SymbologyMap.cs" />
+    <Compile Include="TimedLock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

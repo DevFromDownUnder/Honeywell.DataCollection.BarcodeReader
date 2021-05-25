@@ -24,6 +24,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <param name="e"></param>
         public void OnBarcodeEvent(Com.Honeywell.Aidc.BarcodeReadEvent e)
         {
+            Logger.Info("BarcodeReader", "OnBarcodeEvent");
             Logger.Info("BarcodeReader", "Received barcode data:" + e.BarcodeData + " CodeId:" + e.CodeId + " AimId:" + e.AimId);
 
             if (!mBarcodeReader.HasBarcodeDataReadySubscriber)
@@ -42,6 +43,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <param name="e"></param>
         public void OnFailureEvent(Com.Honeywell.Aidc.BarcodeFailureEvent e)
         {
+            Logger.Info("BarcodeReader", "OnFailureEvent");
         }
     }
 }
