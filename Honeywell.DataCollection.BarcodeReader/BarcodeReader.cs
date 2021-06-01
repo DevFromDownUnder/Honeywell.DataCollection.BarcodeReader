@@ -36,18 +36,9 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         private bool mReaderOpened;
         internal const string LOG_TAG = "BarcodeReader";
         private static BarcodeDeviceEventHandler sBarcodeDeviceEventHandler;
+        private static object mOpenLock = new object();
 
         public const string DEFAULT_PROFILE = "DEFAULT";
-
-        #region LoadProfile Workaround
-
-        public Dictionary<string, object> DefaultProperties { get; set; }
-        public Dictionary<string, object> ProfileProperties { get; set; }
-
-        private Com.Honeywell.Aidc.BarcodeReader mProfileAidcBarcodeReader;
-        private Com.Honeywell.Aidc.AidcManager mProfileAidcManager;
-
-        #endregion LoadProfile Workaround
 
         /// <summary>
         /// Gets a boolean value indicating whether the barcode reader is opened.
@@ -131,11 +122,14 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
             Task.Run(() =>
            {
-               using (var barcodeReaderManager = BarcodeReaderManager.Create((Context)context))
+               lock (mOpenLock)
                {
-                   if (mAidcManager == null)
+                   using (var barcodeReaderManager = BarcodeReaderManager.Create((Context)context))
                    {
-                       mAidcManager = barcodeReaderManager.Init();
+                       if (mAidcManager == null)
+                       {
+                           mAidcManager = barcodeReaderManager.Init();
+                       }
                    }
                }
 
@@ -167,7 +161,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
             var result = await Task.Run(() => OpenReader(mScannerName, (Context)mContext));
 
-            Logger.Info("BarcodeReader", "OpenAsync returns Code:" + (object)result.Code + " Message:" + result.Message);
+            Logger.Info("BarcodeReader", "OpenAsync returns Code:" + result.Code + " Message:" + result.Message);
 
             return result;
         }
@@ -181,22 +175,36 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 {
                     if (mAidcBarcodeReader == null)
                     {
-                        mAidcManager = BarcodeReaderManager.Create(context).Init();
-                        mAidcBarcodeReader = mAidcManager.CreateBarcodeReader(scannerName);
-                        try
+                        lock (mOpenLock)
                         {
-                            mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
-                        }
-                        catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
-                        {
-                            result.Code = Result.Codes.INTERNAL_ERROR;
-                            result.Message = "Failed to set trigger control mode.";
-                        }
+                            var manager = BarcodeReaderManager.Create(context);
 
-                        if (result.Code == Result.Codes.SUCCESS)
-                        {
-                            mBarcodeEventHandler = new BarcodeEventHandler(this);
-                            mAidcBarcodeReader.AddBarcodeListener(mBarcodeEventHandler);
+                            if (manager != null)
+                            {
+
+                                mAidcManager = manager.Init();
+                                mAidcBarcodeReader = mAidcManager.CreateBarcodeReader(scannerName);
+                                try
+                                {
+                                    mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
+                                }
+                                catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
+                                {
+                                    result.Code = Result.Codes.INTERNAL_ERROR;
+                                    result.Message = "Failed to set trigger control mode.";
+                                }
+
+                                if (result.Code == Result.Codes.SUCCESS)
+                                {
+                                    mBarcodeEventHandler = new BarcodeEventHandler(this);
+                                    mAidcBarcodeReader.AddBarcodeListener(mBarcodeEventHandler);
+                                }
+                            }
+                            else
+                            {
+                                result.Code = Result.Codes.INTERNAL_ERROR;
+                                result.Message = "Manager has been disposed.";
+                            }
                         }
                     }
                     if (result.Code == Result.Codes.SUCCESS)
@@ -214,6 +222,11 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     }
                 }
                 catch (Java.Lang.Exception ex)
+                {
+                    result.Code = Result.Codes.EXCEPTION;
+                    result.Message = ex.Message;
+                }
+                catch (Exception ex)
                 {
                     result.Code = Result.Codes.EXCEPTION;
                     result.Message = ex.Message;
@@ -442,13 +455,16 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             }
 
             return await Task.Run(() =>
-           {
-               using BarcodeReaderManager barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
+            {
+                lock (mOpenLock)
+                {
+                    using BarcodeReaderManager barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
 
-               barcodeReaderManager.Init();
+                    barcodeReaderManager.Init();
 
-               return barcodeReaderManager.ListConnectedBarcodeDevices();
-           });
+                    return barcodeReaderManager.ListConnectedBarcodeDevices();
+                }
+            });
         }
 
         /// <summary>Releases the barcode reader resources.</summary>
@@ -467,108 +483,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             }
         }
 
-        ///// <summary>
-        ///// Loads profile and properties as per setup in Honeywell scanner settings on the device settings.
-        /////
-        ///// Reader must be closed.
-        /////
-        ///// This is pretty nasty and is a work around
-        ///// Honeywells loadProfile appears to wipe any event handlers or any readers
-        ///// </summary>
-        ///// <param name="profileName">Application specific profile name usually Application.Context.PackageName</param>
-        ///// <param name="fallbackToDefault">Due to the work arounds, this was included to let you fallback to the DEFAULT profile</param>
-        ///// <returns>
-        ///// Returns SUCCESS if load was successful.
-        ///// </returns>
-        //public async Task<Result> LoadProfileAsync(string profileName, bool fallbackToDefault)
-        //{
-        //    //What an unbelievable pain this is
-        //    //Calling LoadPofile appears to kill any reader bindings
-        //    //Made it load properties but must be done while the reader is closed
-
-        //    Result result;
-
-        //    if (!mReaderOpened)
-        //    {
-        //        try
-        //        {
-        //            //Kind of bad but LoadProfile appears to break the events
-        //            // Whole lot of bad work arounds going on here
-        //            mProfileAidcManager = await BarcodeReaderManagerProfile.GetInstance(Application.Context).GetManager();
-        //            mProfileAidcBarcodeReader = mProfileAidcManager.CreateBarcodeReader(mScannerName);
-
-        //            try
-        //            {
-        //                mProfileAidcBarcodeReader.Claim();
-
-        //                try
-        //                {
-        //                    var loaded = mProfileAidcBarcodeReader.LoadProfile(profileName);
-
-        //                    if (!loaded && fallbackToDefault)
-        //                    {
-        //                        loaded = mProfileAidcBarcodeReader.LoadProfile(DEFAULT_PROFILE);
-        //                    }
-
-        //                    if (!loaded)
-        //                    {
-        //                        result = new Result(Result.Codes.INVALID_PARAMETER, "Profile not found.");
-        //                    }
-        //                    else
-        //                    {
-        //                        //Set our properties
-        //                        ProfileProperties = GetProperties(mProfileAidcBarcodeReader);
-        //                        DefaultProperties = GetDefaultProperties(mProfileAidcBarcodeReader);
-
-        //                        result = new Result(Result.Codes.SUCCESS, "Profile loaded.");
-        //                    }
-        //                }
-        //                finally
-        //                {
-        //                    try
-        //                    {
-        //                        //try to release if we got a claim
-        //                        mProfileAidcBarcodeReader.Release();
-        //                    }
-        //                    catch (Java.Lang.Exception) { }
-        //                    catch (Exception) { }
-        //                }
-        //            }
-        //            catch (Com.Honeywell.Aidc.ScannerUnavailableException)
-        //            {
-        //                result = new Result(Result.Codes.INTERNAL_ERROR, "Could not bind reader to load profile.");
-        //            }
-        //        }
-        //        catch (Java.Lang.Exception ex)
-        //        {
-        //            result = new Result(Result.Codes.EXCEPTION, ex.Message);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        result = new Result(Result.Codes.READER_ALREADY_OPENED, "Reader must be closed to load profile properties.");
-        //    }
-
-        //    return result;
-        //}
-
         public async Task<Result> LoadProfileAsync(string profileName, bool fallbackToDefault = true)
         {
             return await Task.Run(() =>
             {
                 Result result = default;
 
-                if (!mReaderOpened)
+                if (mReaderOpened)
                 {
                     bool loaded = false;
 
                     try
                     {
-                        loaded = mProfileAidcBarcodeReader.LoadProfile(profileName);
+                        loaded = mAidcBarcodeReader.LoadProfile(profileName);
 
                         if (!loaded && fallbackToDefault)
                         {
-                            loaded = mProfileAidcBarcodeReader.LoadProfile(DEFAULT_PROFILE);
+                            loaded = mAidcBarcodeReader.LoadProfile(DEFAULT_PROFILE);
                         }
 
                         IDictionary<string, Java.Lang.Object> properties = default;
@@ -576,7 +507,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                         //Get the settings from the loaded profile
                         if (loaded)
                         {
-                            properties = CleanProperties(mProfileAidcBarcodeReader.AllProperties);
+                            properties = CleanProperties(mAidcBarcodeReader.AllProperties);
                         }
 
                         //Reset the reader as loadProfile is broken and kills readers
@@ -585,7 +516,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                         //Set the properties from our profile if we loaded it
                         if (result.Code == Result.Codes.SUCCESS && properties != null)
                         {
-                            mProfileAidcBarcodeReader.SetProperties(properties);
+                            mAidcBarcodeReader.SetProperties(properties);
                         }
                     }
                     catch (Java.Lang.Exception ex)
@@ -595,13 +526,6 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     catch (Exception ex)
                     {
                         return new Result(Result.Codes.EXCEPTION, ex.Message);
-                    }
-                    finally
-                    {
-                        if (loaded && result?.Code != Result.Codes.SUCCESS)
-                        {
-                            mReaderOpened = false;
-                        }
                     }
                 }
                 else
@@ -625,6 +549,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 if (mReaderOpened)
                 {
                     mAidcBarcodeReader?.Close();
+                    mReaderOpened = false;
                 }
 
                 mAidcBarcodeReader?.Dispose();
@@ -665,23 +590,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             return properties;
         }
 
-        ///// <summary>
-        ///// Gets a list of properties.
-        /////
-        ///// Will return empty Dictionary if barcode reader is not open
-        ///// </summary>
-        ///// <returns>Dictionary of barcode reader properties</returns>
-        //public Dictionary<string, object> GetProperties()
-        //{
-        //    var result = new Dictionary<string, object>();
+        /// <summary>
+        /// Gets a list of properties.
+        ///
+        /// Will return empty Dictionary if barcode reader is not open
+        /// </summary>
+        /// <returns>Dictionary of barcode reader properties</returns>
+        public Dictionary<string, object> GetProperties()
+        {
+            var result = new Dictionary<string, object>();
 
-        //    if (mReaderOpened)
-        //    {
-        //        result = GetProperties(mAidcBarcodeReader);
-        //    }
+            if (mReaderOpened)
+            {
+                result = GetProperties(mAidcBarcodeReader);
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
         protected Dictionary<string, object> GetProperties(Com.Honeywell.Aidc.BarcodeReader reader)
         {
@@ -695,23 +620,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             return result;
         }
 
-        ///// <summary>
-        ///// Gets a list of default properties.
-        /////
-        ///// Will return empty Dictionary if barcode reader is not open.
-        ///// </summary>
-        ///// <returns>Dictionary of barcode reader properties</returns>
-        //public Dictionary<string, object> GetDefaultProperties()
-        //{
-        //    var result = new Dictionary<string, object>();
+        /// <summary>
+        /// Gets a list of default properties.
+        ///
+        /// Will return empty Dictionary if barcode reader is not open.
+        /// </summary>
+        /// <returns>Dictionary of barcode reader properties</returns>
+        public Dictionary<string, object> GetDefaultProperties()
+        {
+            var result = new Dictionary<string, object>();
 
-        //    if (mReaderOpened)
-        //    {
-        //        result = GetDefaultProperties(mAidcBarcodeReader);
-        //    }
+            if (mReaderOpened)
+            {
+                result = GetDefaultProperties(mAidcBarcodeReader);
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
         protected Dictionary<string, object> GetDefaultProperties(Com.Honeywell.Aidc.BarcodeReader reader)
         {
@@ -748,7 +673,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </summary>
         /// <param name="name">profile name</param>
         /// <returns>Returns if profile name exists</returns>
-        public bool DoesProfileExist(string name)
+        public bool ProfileExists(string name)
         {
             return mReaderOpened && (mAidcBarcodeReader.ProfileNames?.Contains(name) ?? false);
         }

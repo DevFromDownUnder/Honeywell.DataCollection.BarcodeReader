@@ -15,6 +15,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
     {
         private static BarcodeReaderManager sInstance = null;
         private static readonly AutoResetEvent sServiceConnectedEvent = new AutoResetEvent(false);
+        private static readonly object oInitLock = new object();
+        private static readonly object oCreateLock = new object();
 
         /// <summary>
         /// An application only needs one instance of AidcManager; therefore,
@@ -48,12 +50,15 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns></returns>
         internal static BarcodeReaderManager Create(Context context)
         {
-            if (sInstance == null)
+            lock (oCreateLock)
             {
-                sInstance = new BarcodeReaderManager(context);
-            }
+                if (sInstance == null)
+                {
+                    sInstance = new BarcodeReaderManager(context);
+                }
 
-            return sInstance;
+                return sInstance;
+            }
         }
 
         /// <summary>
@@ -66,7 +71,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             if (sAidcManager == null)
             {
-                lock (mAppContext)
+                lock (oInitLock)
                 {
                     try
                     {
@@ -74,7 +79,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
                         AidcManager.Create(mAppContext, this);
 
-                        sServiceConnectedEvent.WaitOne();
+                        sServiceConnectedEvent?.WaitOne();
                     }
                     catch (Java.Lang.Exception ex)
                     {
@@ -91,7 +96,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             Logger.Debug("BarcodeReader", "AidcManager OnCreated callback");
 
             sAidcManager = aidcManager;
-            sServiceConnectedEvent.Set();
+            sServiceConnectedEvent?.Set();
         }
 
         internal IList<BarcodeReaderInfo> ListConnectedBarcodeDevices()
