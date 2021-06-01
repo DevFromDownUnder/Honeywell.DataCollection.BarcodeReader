@@ -54,11 +54,13 @@
     <Compile Include="BarcodeReaderBase.cs" />
     <Compile Include="BarcodeReaderInfo.cs" />
     <Compile Include="BarcodeReaderManager.cs" />
+    <Compile Include="BarcodeReaderProfileHandler.cs" />
     <Compile Include="BarcodeReaderSettingKeys.cs" />
     <Compile Include="BarcodeReaderSettingValues.cs" />
     <Compile Include="BarcodeSymbologies.cs" />
     <Compile Include="ConnectionStateArgs.cs" />
     <Compile Include="IBarcodeReader.cs" />
+    <Compile Include="LoadProfileEventArgs.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ObjectTypeHelper.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

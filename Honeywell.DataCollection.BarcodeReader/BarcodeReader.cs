@@ -36,14 +36,28 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         private bool mReaderOpened;
         internal const string LOG_TAG = "BarcodeReader";
         private static BarcodeDeviceEventHandler sBarcodeDeviceEventHandler;
-        private static object mOpenLock = new object();
+        private static readonly object mOpenLock = new object();
+
+        //Not static as we are just checking our current class isn't resetting
+        private readonly object mProfileFixLock = new object();
 
         public const string DEFAULT_PROFILE = "DEFAULT";
+
+        public string CurrentProfile { get; internal set; } = null;
 
         /// <summary>
         /// Gets a boolean value indicating whether the barcode reader is opened.
         /// </summary>
-        public override bool IsReaderOpened => mReaderOpened;
+        public override bool IsReaderOpened
+        {
+            get
+            {
+                lock (mProfileFixLock)
+                {
+                    return mReaderOpened;
+                }
+            }
+        }
 
         /// <summary>
         /// Creates a BarcodeReader object for accessing the internal scanner.
@@ -121,21 +135,23 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             }
 
             Task.Run(() =>
-           {
-               lock (mOpenLock)
-               {
-                   using (var barcodeReaderManager = BarcodeReaderManager.Create((Context)context))
-                   {
-                       if (mAidcManager == null)
-                       {
-                           mAidcManager = barcodeReaderManager.Init();
-                       }
-                   }
-               }
+            {
+                lock (mProfileFixLock)
+                {
+                    lock (mOpenLock)
+                    {
+                        using var barcodeReaderManager = BarcodeReaderManager.Create((Context)context);
 
-               sBarcodeDeviceEventHandler = new BarcodeDeviceEventHandler(this);
-               mAidcManager.AddBarcodeDeviceListener(sBarcodeDeviceEventHandler);
-           });
+                        if (mAidcManager == null)
+                        {
+                            mAidcManager = barcodeReaderManager.Init();
+                        }
+                    }
+
+                    sBarcodeDeviceEventHandler = new BarcodeDeviceEventHandler(this);
+                    mAidcManager.AddBarcodeDeviceListener(sBarcodeDeviceEventHandler);
+                }
+            });
         }
 
         /// <summary>
@@ -159,7 +175,13 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             Logger.Debug("BarcodeReader", "OpenAsync entry");
 
-            var result = await Task.Run(() => OpenReader(mScannerName, (Context)mContext));
+            var result = await Task.Run(() =>
+            {
+                lock (mProfileFixLock)
+                {
+                    return OpenReader(mScannerName, (Context)mContext);
+                }
+            });
 
             Logger.Info("BarcodeReader", "OpenAsync returns Code:" + result.Code + " Message:" + result.Message);
 
@@ -181,7 +203,6 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
 
                             if (manager != null)
                             {
-
                                 mAidcManager = manager.Init();
                                 mAidcBarcodeReader = mAidcManager.CreateBarcodeReader(scannerName);
                                 try
@@ -213,6 +234,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                         {
                             mAidcBarcodeReader.Claim();
                             mReaderOpened = true;
+
+                            BarcodeReaderProfileHandler.Instance.LoadProfileOccurred += LoadProfileOccurred;
                         }
                         catch (Com.Honeywell.Aidc.ScannerUnavailableException)
                         {
@@ -247,37 +270,42 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         public override async Task<Result> CloseAsync()
         {
             Logger.Debug("BarcodeReader", "CloseAsync entry");
-
-            Result result;
-            if (mReaderOpened)
+            return await Task.Run(() =>
             {
-                result = await Task.Run(() =>
-                {
-                    try
-                    {
-                        mAidcBarcodeReader.Close();
-                    }
-                    catch (Java.Lang.Exception ex)
-                    {
-                        return new Result(Result.Codes.EXCEPTION, ex.Message);
-                    }
+                Result result = new Result(Result.Codes.SUCCESS, "Success.");
 
-                    return new Result(Result.Codes.SUCCESS, "Set method completed.");
-                });
-
-                if (result.Code == Result.Codes.SUCCESS)
+                lock (mProfileFixLock)
                 {
-                    mReaderOpened = false;
+                    if (mReaderOpened)
+                    {
+                        try
+                        {
+                            mAidcBarcodeReader.Close();
+
+                            result = new Result(Result.Codes.SUCCESS, "Close completed.");
+                        }
+                        catch (Java.Lang.Exception ex)
+                        {
+                            result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                        }
+
+                        if (result.Code == Result.Codes.SUCCESS)
+                        {
+                            mReaderOpened = false;
+
+                            BarcodeReaderProfileHandler.Instance.LoadProfileOccurred -= LoadProfileOccurred;
+                        }
+                    }
+                    else
+                    {
+                        result = new Result(Result.Codes.SUCCESS, "Reader already released.");
+                    }
                 }
-            }
-            else
-            {
-                result = new Result(Result.Codes.SUCCESS, "Reader already released.");
-            }
 
-            Logger.Info("BarcodeReader", "CloseAsync returns Code:" + result.Code + " Message:" + result.Message);
+                Logger.Info("BarcodeReader", "CloseAsync returns Code:" + result.Code + " Message:" + result.Message);
 
-            return result;
+                return result;
+            });
         }
 
         /// <summary>
@@ -317,39 +345,53 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             Logger.Debug("BarcodeReader", "SetAsync entry");
 
-            if (mReaderOpened)
+            return await Task.Run(() =>
             {
-                return await Task.Run(() =>
+                Result result = new Result(Result.Codes.SUCCESS, "Success");
+
+                lock (mProfileFixLock)
                 {
-                    try
+                    if (mReaderOpened)
                     {
-                        var dictionary = new Dictionary<string, Java.Lang.Object>();
-                        foreach (KeyValuePair<string, object> setting in settings)
+                        try
                         {
-                            try
+                            var dictionary = new Dictionary<string, Java.Lang.Object>();
+                            foreach (KeyValuePair<string, object> setting in settings)
                             {
-                                dictionary.Add(setting.Key, ObjectTypeHelper.ConvertSettingValueToJavaObject(setting.Value));
+                                try
+                                {
+                                    dictionary.Add(setting.Key, ObjectTypeHelper.ConvertSettingValueToJavaObject(setting.Value));
+                                }
+                                catch (ArgumentException ex)
+                                {
+                                    result = new Result(Result.Codes.INVALID_PARAMETER, ex.Message);
+                                }
                             }
-                            catch (ArgumentException ex)
+
+                            if (result.Code == Result.Codes.SUCCESS)
                             {
-                                return new Result(Result.Codes.INVALID_PARAMETER, ex.Message);
+                                mAidcBarcodeReader.SetProperties(dictionary);
+
+                                result = new Result(Result.Codes.SUCCESS, "Set method completed.");
                             }
                         }
-
-                        mAidcBarcodeReader.SetProperties(dictionary);
+                        catch (Java.Lang.Exception ex)
+                        {
+                            result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                        }
                     }
-                    catch (Java.Lang.Exception ex)
+                    else
                     {
-                        return new Result(Result.Codes.EXCEPTION, ex.Message);
+                        result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
                     }
+                }
 
-                    return new Result(Result.Codes.SUCCESS, "Set method completed.");
-                });
-            }
-            else
-            {
-                return new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            }
+                return result;
+            });
         }
 
         /// <summary>
@@ -363,34 +405,41 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// failure result of the operation.</returns>
         public override Task<Result> SoftwareTriggerAsync(bool on)
         {
-            Result result;
-            if (mReaderOpened)
+            return Task.Run(() =>
             {
-                try
+                Result result;
+
+                lock (mProfileFixLock)
                 {
-                    if (on)
+                    if (mReaderOpened)
                     {
-                        mAidcBarcodeReader.SoftwareTrigger(false);
-                        mAidcBarcodeReader.SoftwareTrigger(true);
-                        result = new Result(Result.Codes.SUCCESS, "Software trigger on.");
+                        try
+                        {
+                            if (on)
+                            {
+                                mAidcBarcodeReader.SoftwareTrigger(false);
+                                mAidcBarcodeReader.SoftwareTrigger(true);
+                                result = new Result(Result.Codes.SUCCESS, "Software trigger on.");
+                            }
+                            else
+                            {
+                                mAidcBarcodeReader.SoftwareTrigger(false);
+                                result = new Result(Result.Codes.SUCCESS, "Software trigger off.");
+                            }
+                        }
+                        catch (Java.Lang.Exception ex)
+                        {
+                            result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                        }
                     }
                     else
                     {
-                        mAidcBarcodeReader.SoftwareTrigger(false);
-                        result = new Result(Result.Codes.SUCCESS, "Software trigger off.");
+                        result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
                     }
-                }
-                catch (Java.Lang.Exception ex)
-                {
-                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
-                }
-            }
-            else
-            {
-                result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            }
 
-            return Task.FromResult(result);
+                    return result;
+                }
+            });
         }
 
         /// <summary>Enables or disables the barcode reader.</summary>
@@ -400,37 +449,44 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// failure result of the operation.</returns>
         public override Task<Result> EnableAsync(bool enabled)
         {
-            Result result;
-            if (mReaderOpened)
+            return Task.Run(() =>
             {
-                try
+                Result result;
+
+                lock (mProfileFixLock)
                 {
-                    if (enabled)
+                    if (mReaderOpened)
                     {
-                        mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
-                        result = new Result(Result.Codes.SUCCESS, "Hardware trigger enabled.");
+                        try
+                        {
+                            if (enabled)
+                            {
+                                mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "autoControl");
+                                result = new Result(Result.Codes.SUCCESS, "Hardware trigger enabled.");
+                            }
+                            else
+                            {
+                                mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "disable");
+                                result = new Result(Result.Codes.SUCCESS, "Hardware trigger disabled.");
+                            }
+                        }
+                        catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
+                        {
+                            result = new Result(Result.Codes.INTERNAL_ERROR, "Failed to set trigger control mode.");
+                        }
+                        catch (Java.Lang.Exception ex)
+                        {
+                            result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                        }
                     }
                     else
                     {
-                        mAidcBarcodeReader.SetProperty("TRIG_CONTROL_MODE", "disable");
-                        result = new Result(Result.Codes.SUCCESS, "Hardware trigger disabled.");
+                        result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
                     }
-                }
-                catch (Com.Honeywell.Aidc.UnsupportedPropertyException)
-                {
-                    result = new Result(Result.Codes.INTERNAL_ERROR, "Failed to set trigger control mode.");
-                }
-                catch (Java.Lang.Exception ex)
-                {
-                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
-                }
-            }
-            else
-            {
-                result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "No active scanner connection.");
-            }
 
-            return Task.FromResult(result);
+                    return result;
+                }
+            });
         }
 
         /// <summary>
@@ -472,8 +528,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             try
             {
+                //No lock check here, we are disposing
                 if (mReaderOpened)
                 {
+                    BarcodeReaderProfileHandler.Instance.LoadProfileOccurred -= LoadProfileOccurred;
                     mAidcBarcodeReader.Close();
                 }
             }
@@ -489,52 +547,101 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             {
                 Result result = default;
 
-                if (mReaderOpened)
+                lock (mProfileFixLock)
                 {
-                    bool loaded = false;
-
-                    try
+                    if (mReaderOpened)
                     {
-                        loaded = mAidcBarcodeReader.LoadProfile(profileName);
-
-                        if (!loaded && fallbackToDefault)
+                        bool loaded = false;
+                        try
                         {
-                            loaded = mAidcBarcodeReader.LoadProfile(DEFAULT_PROFILE);
+                            loaded = mAidcBarcodeReader.LoadProfile(profileName);
+
+                            if (loaded)
+                            {
+                                CurrentProfile = profileName;
+                            }
+
+                            if (!loaded && fallbackToDefault)
+                            {
+                                loaded = mAidcBarcodeReader.LoadProfile(DEFAULT_PROFILE);
+
+                                if (loaded)
+                                {
+                                    CurrentProfile = DEFAULT_PROFILE;
+                                }
+                            }
+
+                            IDictionary<string, Java.Lang.Object> properties = default;
+
+                            //Get the settings from the loaded profile
+                            if (loaded)
+                            {
+                                properties = CleanProperties(mAidcBarcodeReader.AllProperties);
+                            }
+
+                            //Ensure all other readers get reset
+                            //We will handle our own reset for better error handling
+                            //So we will unsubscribe and Open in the ResetReader will re-subscribe
+                            BarcodeReaderProfileHandler.Instance.LoadProfileOccurred -= LoadProfileOccurred;
+                            BarcodeReaderProfileHandler.Instance.ApplyFix(mScannerName, profileName, properties);
+
+                            //Reset the reader as loadProfile is broken and kills readers
+                            result = ResetReader();
+
+                            //Set the properties from our profile if we loaded it
+                            if (result.Code == Result.Codes.SUCCESS && properties != null)
+                            {
+                                mAidcBarcodeReader.SetProperties(properties);
+                            }
                         }
-
-                        IDictionary<string, Java.Lang.Object> properties = default;
-
-                        //Get the settings from the loaded profile
-                        if (loaded)
+                        catch (Java.Lang.Exception ex)
                         {
-                            properties = CleanProperties(mAidcBarcodeReader.AllProperties);
+                            return new Result(Result.Codes.EXCEPTION, ex.Message);
                         }
-
-                        //Reset the reader as loadProfile is broken and kills readers
-                        result = ResetReader();
-
-                        //Set the properties from our profile if we loaded it
-                        if (result.Code == Result.Codes.SUCCESS && properties != null)
+                        catch (Exception ex)
                         {
-                            mAidcBarcodeReader.SetProperties(properties);
+                            return new Result(Result.Codes.EXCEPTION, ex.Message);
                         }
                     }
-                    catch (Java.Lang.Exception ex)
+                    else
                     {
-                        return new Result(Result.Codes.EXCEPTION, ex.Message);
+                        result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "Reader must be open.");
                     }
-                    catch (Exception ex)
-                    {
-                        return new Result(Result.Codes.EXCEPTION, ex.Message);
-                    }
-                }
-                else
-                {
-                    result = new Result(Result.Codes.NO_ACTIVE_CONNECTION, "Reader must be open.");
                 }
 
                 return result;
             });
+        }
+
+        #region LoadProfile issue fix functions
+
+        private void LoadProfileOccurred(object sender, LoadProfileEventArgs e)
+        {
+            try
+            {
+                //Not sure if the reset is only needed for the same scanner or all
+                //Will assume its same for now
+                //If not, this if would get combind with the success if below instead
+                if (e.ScannerName == mScannerName)
+                {
+                    lock (mProfileFixLock)
+                    {
+                        //Don't need to check if we have an open reader as we made it only
+                        // subscribe and unsubscribe on open and close
+
+                        //Reset the reader as loadProfile is broken and kills readers
+                        var result = ResetReader();
+
+                        //Set the properties if we are using the same profile and scanner
+                        if (result?.Code == Result.Codes.SUCCESS && e.ProfileProperties != null && CurrentProfile == e.ProfileName)
+                        {
+                            mAidcBarcodeReader?.SetProperties(e.ProfileProperties);
+                        }
+                    }
+                }
+            }
+            catch (Java.Lang.Exception) { }
+            catch (Exception) { }
         }
 
         private Result CleanupPreviousReader()
@@ -590,6 +697,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             return properties;
         }
 
+        #endregion LoadProfile issue fix functions
+
         /// <summary>
         /// Gets a list of properties.
         ///
@@ -600,9 +709,12 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             var result = new Dictionary<string, object>();
 
-            if (mReaderOpened)
+            lock (mProfileFixLock)
             {
-                result = GetProperties(mAidcBarcodeReader);
+                if (mReaderOpened)
+                {
+                    result = GetProperties(mAidcBarcodeReader);
+                }
             }
 
             return result;
@@ -630,9 +742,12 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             var result = new Dictionary<string, object>();
 
-            if (mReaderOpened)
+            lock (mProfileFixLock)
             {
-                result = GetDefaultProperties(mAidcBarcodeReader);
+                if (mReaderOpened)
+                {
+                    result = GetDefaultProperties(mAidcBarcodeReader);
+                }
             }
 
             return result;
@@ -658,13 +773,16 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>List of barcode reader profiles</returns>
         public IList<string> GetProfileNames()
         {
-            if (mReaderOpened)
+            lock (mProfileFixLock)
             {
-                return mAidcBarcodeReader.ProfileNames;
-            }
-            else
-            {
-                return new List<string>();
+                if (mReaderOpened)
+                {
+                    return mAidcBarcodeReader.ProfileNames;
+                }
+                else
+                {
+                    return new List<string>();
+                }
             }
         }
 
@@ -675,7 +793,10 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>Returns if profile name exists</returns>
         public bool ProfileExists(string name)
         {
-            return mReaderOpened && (mAidcBarcodeReader.ProfileNames?.Contains(name) ?? false);
+            lock (mProfileFixLock)
+            {
+                return mReaderOpened && (mAidcBarcodeReader.ProfileNames?.Contains(name) ?? false);
+            }
         }
 
         /// <summary>
@@ -684,15 +805,18 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <returns>Captured image</returns>
         public Android.Graphics.Bitmap CaptureImage()
         {
-            //Doesn't appear to require it to be opened
-            //However mAidcBarcodeReader will be null in this library if you don't open it
-            if (mReaderOpened)
+            lock (mProfileFixLock)
             {
-                return mAidcBarcodeReader.CaptureImage();
-            }
-            else
-            {
-                return null;
+                //Doesn't appear to require it to be opened
+                //However mAidcBarcodeReader will be null in this library if you don't open it
+                if (mReaderOpened)
+                {
+                    return mAidcBarcodeReader.CaptureImage();
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }
