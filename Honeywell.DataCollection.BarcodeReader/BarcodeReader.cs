@@ -38,12 +38,20 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         private static BarcodeDeviceEventHandler sBarcodeDeviceEventHandler;
         private static readonly object mOpenLock = new object();
 
+        private static long id = 0;
+
+        public long ID { get; internal set; }
+
         //Not static as we are just checking our current class isn't resetting
         private readonly object mProfileFixLock = new object();
 
         public const string DEFAULT_PROFILE = "DEFAULT";
 
         public string CurrentProfile { get; internal set; } = null;
+
+        private bool mLoadProfileRebindPending = false;
+        private IDictionary<string, Java.Lang.Object> mLoadProfileRebindProperties = default;
+        private IDictionary<string, Java.Lang.Object> mLoadProfileRebindLastSetProperties = default;
 
         /// <summary>
         /// Gets a boolean value indicating whether the barcode reader is opened.
@@ -76,6 +84,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// </example>
         public BarcodeReader(object context = null) : base(context)
         {
+            ID = ++id;
+
             if (context == null)
             {
                 mContext = Application.Context;
@@ -105,6 +115,8 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <exception cref="T:System.ArgumentException">Invalid context parameter.</exception>
         public BarcodeReader(string scannerName, object context = null) : base(scannerName, context)
         {
+            ID = ++id;
+
             if (context == null)
             {
                 mContext = Application.Context;
@@ -173,7 +185,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// failure result of the operation.</returns>
         public override async Task<Result> OpenAsync()
         {
-            Logger.Debug("BarcodeReader", "OpenAsync entry");
+            Logger.Debug($"BarcodeReader {ID}", "OpenAsync entry");
 
             var result = await Task.Run(() =>
             {
@@ -183,7 +195,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 }
             });
 
-            Logger.Info("BarcodeReader", "OpenAsync returns Code:" + result.Code + " Message:" + result.Message);
+            Logger.Info($"BarcodeReader {ID}", "OpenAsync returns Code:" + result.Code + " Message:" + result.Message);
 
             return result;
         }
@@ -269,7 +281,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// failure result of the operation.</returns>
         public override async Task<Result> CloseAsync()
         {
-            Logger.Debug("BarcodeReader", "CloseAsync entry");
+            Logger.Debug($"BarcodeReader {ID}", "CloseAsync entry");
             return await Task.Run(() =>
             {
                 Result result = new Result(Result.Codes.SUCCESS, "Success.");
@@ -302,7 +314,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     }
                 }
 
-                Logger.Info("BarcodeReader", "CloseAsync returns Code:" + result.Code + " Message:" + result.Message);
+                Logger.Info($"BarcodeReader {ID}", "CloseAsync returns Code:" + result.Code + " Message:" + result.Message);
 
                 return result;
             });
@@ -343,7 +355,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         /// <seealso cref="T:DevFromDownUnder.Honeywell.DataCollection.BarcodeReaderSettingValues" />
         public override async Task<Result> SetAsync(Dictionary<string, object> settings)
         {
-            Logger.Debug("BarcodeReader", "SetAsync entry");
+            Logger.Debug($"BarcodeReader {ID}", "SetAsync entry");
 
             return await Task.Run(() =>
             {
@@ -371,6 +383,9 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                             if (result.Code == Result.Codes.SUCCESS)
                             {
                                 mAidcBarcodeReader.SetProperties(dictionary);
+
+                                //Needed for loadprofile rebind
+                                mLoadProfileRebindLastSetProperties = dictionary;
 
                                 result = new Result(Result.Codes.SUCCESS, "Set method completed.");
                             }
@@ -407,7 +422,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             return Task.Run(() =>
             {
-                Result result;
+                Result result = new Result(Result.Codes.SUCCESS, "Success");
 
                 lock (mProfileFixLock)
                 {
@@ -451,7 +466,7 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
         {
             return Task.Run(() =>
             {
-                Result result;
+                Result result = new Result(Result.Codes.SUCCESS, "Success");
 
                 lock (mProfileFixLock)
                 {
@@ -537,15 +552,26 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
             }
             catch (Java.Lang.Exception ex)
             {
-                Logger.Info("BarcodeReader", "Exception occurs in closing reader session, " + ex.Message);
+                Logger.Info($"BarcodeReader {ID}", "Exception occurs in closing reader session, " + ex.Message);
             }
         }
 
+        /// <summary>
+        /// Used to load the scanners embedded scanner settings that can be configured on the device
+        /// 
+        /// This has a bug that will screw with existing readers and has a lot of work around logic to handle that
+        /// If you are using nested scanners you should call the OnResume function when underlying activities are resumed
+        /// </summary>
+        /// <param name="profileName">Profile name to attempt to load</param>
+        /// <param name="fallbackToDefault">Will attempt to load DEFAULT on load fail, helps with all the workaround logic overhead</param>
+        /// <returns></returns>
         public async Task<Result> LoadProfileAsync(string profileName, bool fallbackToDefault = true)
         {
+            Logger.Debug($"BarcodeReader {ID}", "LoadProfileAsync entry");
+
             return await Task.Run(() =>
             {
-                Result result = default;
+                Result result = new Result(Result.Codes.SUCCESS, "Success");
 
                 lock (mProfileFixLock)
                 {
@@ -609,14 +635,74 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                     }
                 }
 
+                Logger.Debug($"BarcodeReader {ID}", "LoadProfileAsync exit");
+
                 return result;
             });
         }
 
         #region LoadProfile issue fix functions
+        /// <summary>
+        /// This call is needed if you are going to be using LoadProfileAsync with nested readers
+        /// </summary>
+        /// <returns>Success status and may result in closed readers if not SUCCESS</returns>
+        public Task<Result> OnResumeAsync()
+        {
+            Logger.Debug($"BarcodeReader {ID}", "OnResume entry");
+
+            return Task.Run(() =>
+            {
+                Result result = new Result(Result.Codes.SUCCESS, "Success");
+
+                try
+                {
+                    if (mLoadProfileRebindPending)
+                    {
+                        lock (mProfileFixLock)
+                        {
+                            //Fix the current reader
+
+                            //Don't need to check if we have an open reader as we made it only
+                            // subscribe and unsubscribe on open and close
+
+                            //Reset the reader as loadProfile is broken and kills readers
+                            result = ResetReader();
+
+                            //Set the properties if we are using the same profile and scanner
+                            if (result?.Code == Result.Codes.SUCCESS)
+                            {
+                                if (mLoadProfileRebindProperties != null)
+                                {
+                                    mAidcBarcodeReader?.SetProperties(mLoadProfileRebindProperties);
+                                }
+                                else if (mLoadProfileRebindLastSetProperties != null)
+                                {
+                                    //Fallback to last non-profile properties
+                                    mAidcBarcodeReader?.SetProperties(mLoadProfileRebindLastSetProperties);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Java.Lang.Exception ex)
+                {
+                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    result = new Result(Result.Codes.EXCEPTION, ex.Message);
+                }
+
+                Logger.Debug($"BarcodeReader {ID}", "OnResume exit");
+
+                return result;
+            });
+        }
 
         private void LoadProfileOccurred(object sender, LoadProfileEventArgs e)
         {
+            Logger.Debug($"BarcodeReader {ID}", "LoadProfileOccurred entry");
+
             try
             {
                 //Not sure if the reset is only needed for the same scanner or all
@@ -626,6 +712,13 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                 {
                     lock (mProfileFixLock)
                     {
+                        //Will need to rebind on resume of other activities
+                        mLoadProfileRebindPending = true;
+                        mLoadProfileRebindProperties = e.ProfileProperties;
+
+                        //Fix the current reader
+                        Logger.Debug($"BarcodeReader {ID}", "LoadProfileOccurred reset");
+
                         //Don't need to check if we have an open reader as we made it only
                         // subscribe and unsubscribe on open and close
 
@@ -633,15 +726,25 @@ namespace DevFromDownUnder.Honeywell.DataCollection.BarcodeReader
                         var result = ResetReader();
 
                         //Set the properties if we are using the same profile and scanner
-                        if (result?.Code == Result.Codes.SUCCESS && e.ProfileProperties != null && CurrentProfile == e.ProfileName)
+                        if (result?.Code == Result.Codes.SUCCESS && CurrentProfile == e.ProfileName)
                         {
-                            mAidcBarcodeReader?.SetProperties(e.ProfileProperties);
+                            if (e.ProfileProperties != null)
+                            {
+                                mAidcBarcodeReader?.SetProperties(e.ProfileProperties);
+                            }
+                            else if (mLoadProfileRebindLastSetProperties != null)
+                            {
+                                //Fallback to last non-profile properties
+                                mAidcBarcodeReader?.SetProperties(mLoadProfileRebindLastSetProperties);
+                            }
                         }
                     }
                 }
             }
             catch (Java.Lang.Exception) { }
             catch (Exception) { }
+
+            Logger.Debug($"BarcodeReader {ID}", "LoadProfileOccurred exit");
         }
 
         private Result CleanupPreviousReader()
